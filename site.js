@@ -41,6 +41,12 @@
     if (topic && tSel.querySelector('option[value="' + topic.replace(/[^a-z-]/g, "") + '"]')) tSel.value = topic;
     if (st && /^(harrison|yellville|either)$/.test(st)) sSel.value = st;
     if (ref) { document.getElementById("c-ref-text").textContent = ref; document.getElementById("c-ref-line").hidden = false; }
+    var equip = document.getElementById("c-equip"), partField = document.getElementById("c-part-field");
+    var syncEquip = function () {
+      var t = tSel.value; equip.hidden = !(t === "parts" || t === "saw-shop");
+      partField.hidden = t !== "parts";
+    };
+    tSel.addEventListener("change", syncEquip); syncEquip();
     var status = document.getElementById("c-status");
     var say = function (t, k) { status.textContent = t; status.className = "form-msg" + (k ? " " + k : ""); };
     form.addEventListener("submit", function (e) {
@@ -51,6 +57,11 @@
       if (!phone && !email) { say("Please leave a phone number or an email so we can reply.", "err"); document.getElementById("c-phone").focus(); return; }
       if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say("That email address doesn't look right.", "err"); document.getElementById("c-email").focus(); return; }
       if (!msg) { say("Please add a message.", "err"); document.getElementById("c-msg").focus(); return; }
+      if (!document.getElementById("c-equip").hidden) {
+        var eq = [["Brand", v("c-brand")], ["Model", v("c-model")], ["Serial", v("c-serial")], ["Part needed", v("c-part")]]
+          .filter(function (p) { return p[1]; }).map(function (p) { return p[0] + ": " + p[1]; });
+        if (eq.length) msg = eq.join("\n") + "\n\n" + msg;
+      }
       // spam traps: a hidden field people never fill in, and forms sent within 3 seconds of opening
       if (v("c-website") || Date.now() - formOpened < 3000) { form.reset(); say("Thanks. Your message was sent.", "ok"); return; }
       if (!dbReady) { say("Sorry, the form isn't available right now. Please call Harrison 870-741-3493 or Yellville 870-449-4255.", "err"); return; }
@@ -60,7 +71,7 @@
         store: sSel.value, topic: tSel.value, ref: ref, message: msg.slice(0, 2000),
         status: "new", createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(function () {
-        form.reset(); document.getElementById("c-ref-line").hidden = true;
+        form.reset(); document.getElementById("c-ref-line").hidden = true; syncEquip();
         say("Thanks, " + name.split(" ")[0] + ". Your message was sent. We'll call or email you back.", "ok");
       }).catch(function () {
         say("Sorry, that didn't go through. Please call Harrison 870-741-3493 or Yellville 870-449-4255.", "err");
@@ -151,9 +162,10 @@
   }
 
   function unitCard(u) {
-    var card = document.createElement("article"); card.className = "unit";
+    var card = document.createElement("article"); card.className = "unit" + (u.clearance ? " is-clearance" : "");
+    if (u.clearance) { var rb = document.createElement("span"); rb.className = "ribbon"; rb.textContent = "Clearance"; card.appendChild(rb); }
     var photos = Array.isArray(u.photos) ? u.photos.filter(function (x) { return typeof x === "string" && x.indexOf("data:image/") === 0; }) : [];
-    var title = [u.year, u.brand, u.model].filter(Boolean).join(" ");
+    var title = [u.condition === "new" ? "New" : u.year, u.brand, u.model].filter(Boolean).join(" ");
     if (photos.length) {
       var box = document.createElement("div"); box.className = "unit-photo";
       var img = document.createElement("img"); img.src = photos[0]; img.alt = title; img.loading = "lazy";
@@ -207,7 +219,8 @@
     live.sort(function (a, b) { return (a.sort || 0) - (b.sort || 0) || (b.createdAt || 0) - (a.createdAt || 0); });
     grid.textContent = "";
     live.forEach(function (x) {
-      var c = document.createElement("article"); c.className = "special";
+      var c = document.createElement("article"); c.className = "special" + (x.clearance ? " is-clearance" : "");
+      if (x.clearance) { var rb = document.createElement("span"); rb.className = "ribbon"; rb.textContent = "Clearance"; c.appendChild(rb); }
       if (typeof x.photo === "string" && x.photo.indexOf("data:image/") === 0) {
         var ph = document.createElement("div"); ph.className = "special-photo";
         var im = document.createElement("img"); im.src = x.photo; im.alt = x.title; im.loading = "lazy"; ph.appendChild(im); c.appendChild(ph);
@@ -250,15 +263,20 @@
     if (empty) empty.hidden = open.length > 0;
   }
 
-  function applyUnits(units) {
-    var grid = document.getElementById("used-units-grid"), empty = document.getElementById("used-units-empty");
-    if (!grid) return;
-    var live = units.filter(function (u) { return u && !u.sold; });
-    live.sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+  function fillGrid(gridId, list, emptyId, sectionId) {
+    var grid = document.getElementById(gridId); if (!grid) return;
     grid.textContent = "";
-    live.forEach(function (u) { grid.appendChild(unitCard(u)); });
-    grid.hidden = live.length === 0;
-    if (empty) empty.hidden = live.length > 0;
+    list.forEach(function (u) { grid.appendChild(unitCard(u)); });
+    grid.hidden = list.length === 0;
+    var empty = emptyId && document.getElementById(emptyId); if (empty) empty.hidden = list.length > 0;
+    var sec = sectionId && document.getElementById(sectionId); if (sec) sec.hidden = list.length === 0;
+  }
+  function applyUnits(units) {
+    var live = units.filter(function (u) { return u && !u.sold; });
+    live.sort(function (a, b) { return (b.clearance ? 1 : 0) - (a.clearance ? 1 : 0) || (b.createdAt || 0) - (a.createdAt || 0); });
+    fillGrid("used-units-grid", live.filter(function (u) { return u.condition !== "new"; }), "used-units-empty");
+    fillGrid("new-units-grid", live.filter(function (u) { return u.condition === "new"; }), null, "in-stock");
+    fillGrid("clearance-grid", live.filter(function (u) { return u.clearance; }).slice(0, 6), null, "clearance");
   }
 
   Promise.all([load(SDK + "firebase-app-compat.js"), load(SDK + "firebase-firestore-compat.js")]).then(function () {
@@ -276,7 +294,7 @@
       var s = snap.data() || {};
       applyBanner(s.banner); applyStores(s.stores); applyBrands(s.brands);
     }).catch(function () { /* keep the built-in content */ });
-    if (document.getElementById("used-units-grid")) {
+    if (document.getElementById("used-units-grid") || document.getElementById("clearance-grid")) {
       db.collection("usedUnits").where("sold", "==", false).get().then(function (qs) {
         var units = []; qs.forEach(function (d) { units.push(d.data()); });
         applyUnits(units);

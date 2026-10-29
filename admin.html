@@ -118,7 +118,7 @@ body{padding-bottom:0}
     <p class="note">Changes save to the live site as soon as you press Save. Each store's phone numbers are not editable here.</p>
     <div class="tabs" role="tablist" aria-label="Admin sections">
       <button role="tab" id="t-inbox" aria-selected="true" aria-controls="p-inbox">Inbox</button>
-      <button role="tab" id="t-units" aria-selected="false" aria-controls="p-units">Used units</button>
+      <button role="tab" id="t-units" aria-selected="false" aria-controls="p-units">Equipment</button>
       <button role="tab" id="t-specials" aria-selected="false" aria-controls="p-specials">Specials</button>
       <button role="tab" id="t-jobs" aria-selected="false" aria-controls="p-jobs">Jobs</button>
       <button role="tab" id="t-stores" aria-selected="false" aria-controls="p-stores">Stores and hours</button>
@@ -160,6 +160,7 @@ body{padding-bottom:0}
             </div>
             <div class="field"><span class="lbl2">Photo (optional)</span><input id="sp-photo" type="file" accept="image/*"><div class="thumbs" id="sp-thumb"></div></div>
             <label class="check"><input id="sp-active" type="checkbox" checked> Show on the website</label>
+            <label class="check"><input id="sp-clear" type="checkbox"> Clearance (adds a red Clearance tag)</label>
             <div class="btns"><button class="btn btn-primary" type="submit">Save special</button><button class="btn btn-line hidden" type="button" id="sp-cancel">Cancel editing</button></div>
             <p class="msg" id="sp-msg" role="status"></p>
           </form>
@@ -194,8 +195,12 @@ body{padding-bottom:0}
       <div class="split">
         <div>
           <div class="box">
-            <h2 id="unit-form-title">Add a used unit</h2>
+            <h2 id="unit-form-title">Add a unit</h2>
             <form id="unit-form" novalidate>
+              <div class="row2">
+                <div class="field"><label for="u-cond">New or used?</label><select id="u-cond"><option value="used">Used</option><option value="new">New (in stock)</option></select></div>
+                <label class="check" style="align-self:end;margin-bottom:12px"><input id="u-clear" type="checkbox"> Clearance</label>
+              </div>
               <div class="row2">
                 <div class="field"><label for="u-brand">Brand</label><input id="u-brand" type="text" placeholder="Stihl, Ferris, Scag..." required></div>
                 <div class="field"><label for="u-model">Model</label><input id="u-model" type="text" required></div>
@@ -203,7 +208,7 @@ body{padding-bottom:0}
               <div class="row2">
                 <div class="field"><label for="u-year">Year</label><input id="u-year" type="number" inputmode="numeric" min="1950" max="2100"></div>
                 <div class="field"><label for="u-hours">Hours</label><input id="u-hours" type="number" inputmode="numeric" min="0"></div>
-                <div class="field"><label for="u-price">Price ($)</label><input id="u-price" type="number" inputmode="decimal" min="0" step="1"><small>Leave blank to show "Call for price".</small></div>
+                <div class="field"><label for="u-price">Price ($)</label><input id="u-price" type="number" inputmode="decimal" min="0" step="1"><small>Leave blank to show "Call for price". Optional on new units.</small></div>
               </div>
               <div class="field"><label for="u-store">Which store has it?</label>
                 <select id="u-store"><option value="harrison">Harrison</option><option value="yellville">Yellville</option><option value="either">Either (show both numbers)</option></select></div>

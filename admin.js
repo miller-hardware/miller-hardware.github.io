@@ -118,7 +118,8 @@
   var money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
   function unitCard(u) {
-    var card = document.createElement("article"); card.className = "unit";
+    var card = document.createElement("article"); card.className = "unit" + (u.clearance ? " is-clearance" : "");
+    if (u.clearance) { var rb = document.createElement("span"); rb.className = "ribbon"; rb.textContent = "Clearance"; card.appendChild(rb); }
     var title = [u.year, u.brand, u.model].filter(Boolean).join(" ");
     if (u.photos && u.photos.length) {
       var box = document.createElement("div"); box.className = "unit-photo";
@@ -149,7 +150,8 @@
       hours: $("u-hours").value === "" ? "" : Number($("u-hours").value),
       price: $("u-price").value === "" ? "" : Number($("u-price").value),
       store: $("u-store").value, description: $("u-desc").value.trim(),
-      photos: form.photos.slice(), sold: $("u-sold").checked
+      photos: form.photos.slice(), sold: $("u-sold").checked,
+      condition: $("u-cond").value, clearance: $("u-clear").checked
     };
   }
 
@@ -169,7 +171,8 @@
     form = { id: null, photos: [] };
     ["u-brand", "u-model", "u-year", "u-hours", "u-price", "u-desc"].forEach(function (id) { $(id).value = ""; });
     $("u-store").value = "yellville"; $("u-sold").checked = false; $("u-photos").value = "";
-    $("unit-form-title").textContent = "Add a used unit"; $("u-save").textContent = "Save unit"; show("u-cancel", false);
+    $("u-cond").value = "used"; $("u-clear").checked = false;
+    $("unit-form-title").textContent = "Add a unit"; $("u-save").textContent = "Save unit"; show("u-cancel", false);
     renderPreview();
   }
 
@@ -180,6 +183,7 @@
     $("u-hours").value = u.hours === "" || u.hours == null ? "" : u.hours;
     $("u-price").value = u.price === "" || u.price == null ? "" : u.price;
     $("u-store").value = u.store || "yellville"; $("u-desc").value = u.description || ""; $("u-sold").checked = !!u.sold;
+    $("u-cond").value = u.condition === "new" ? "new" : "used"; $("u-clear").checked = !!u.clearance;
     $("unit-form-title").textContent = "Edit unit"; $("u-save").textContent = "Save changes"; show("u-cancel", true);
     renderPreview(); say("u-msg", "");
     $("unit-form-title").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -204,7 +208,9 @@
       var info = document.createElement("div"); info.className = "info";
       var b = document.createElement("b"); b.textContent = [u.year, u.brand, u.model].filter(Boolean).join(" ") || "Unit";
       var badge = document.createElement("span"); badge.className = "badge" + (u.sold ? " sold" : ""); badge.textContent = u.sold ? "Sold" : "Listed";
-      b.appendChild(badge); info.appendChild(b);
+      b.appendChild(badge);
+      var cb = document.createElement("span"); cb.className = "badge"; cb.textContent = u.condition === "new" ? "New" : "Used"; b.appendChild(cb);
+      if (u.clearance && !u.sold) { var cl = document.createElement("span"); cl.className = "badge new"; cl.textContent = "Clearance"; b.appendChild(cl); } info.appendChild(b);
       var sp = document.createElement("span");
       sp.textContent = ((u.price !== "" && u.price != null) ? money.format(u.price) : "Call for price") + " · " + (u.store === "either" ? "Either store" : u.store === "harrison" ? "Harrison" : "Yellville");
       info.appendChild(sp); li.appendChild(info);
@@ -231,7 +237,7 @@
   }
 
   function setupUnits() {
-    ["u-brand", "u-model", "u-year", "u-hours", "u-price", "u-store", "u-desc", "u-sold"].forEach(function (id) {
+    ["u-brand", "u-model", "u-year", "u-hours", "u-price", "u-store", "u-desc", "u-sold", "u-cond", "u-clear"].forEach(function (id) {
       $(id).addEventListener("input", renderPreview); $(id).addEventListener("change", renderPreview);
     });
     $("u-photos").addEventListener("change", function () {
@@ -370,7 +376,7 @@
   function ms(v) { return v && typeof v.toMillis === "function" ? v.toMillis() : (typeof v === "number" ? v : 0); }
 
   // ---------- inbox ----------
-  var TOPIC_TXT = { general: "General question", quote: "Quote request", used: "Used equipment", "special-order": "Special order", "saw-shop": "Saw shop service", job: "Job application" };
+  var TOPIC_TXT = { general: "General question", quote: "Quote request", used: "Equipment", parts: "Parts request", "special-order": "Special order", "saw-shop": "Saw shop service", job: "Job application" };
   var inbox = [];
   function loadInbox() {
     db.collection("messages").get().then(function (qs) {
@@ -426,11 +432,12 @@
   function spRead() {
     return { title: $("sp-title").value.trim(), price: $("sp-price").value === "" ? "" : Number($("sp-price").value),
       priceNote: $("sp-note").value.trim(), description: $("sp-desc").value.trim(), store: $("sp-store").value,
-      startDate: $("sp-start").value, endDate: $("sp-end").value, photo: sp.photo, active: $("sp-active").checked };
+      startDate: $("sp-start").value, endDate: $("sp-end").value, photo: sp.photo, active: $("sp-active").checked, clearance: $("sp-clear").checked };
   }
   function spPreview() {
     var x = spRead(), host = $("sp-preview"); host.textContent = "";
-    var c = el("article", "special");
+    var c = el("article", "special" + (x.clearance ? " is-clearance" : ""));
+    if (x.clearance) c.appendChild(el("span", "ribbon", "Clearance"));
     if (x.photo) { var ph = el("div", "special-photo"); var im = el("img"); im.src = x.photo; im.alt = ""; ph.appendChild(im); c.appendChild(ph); }
     var b = el("div", "special-body"); b.appendChild(el("h3", "", x.title || "Special title"));
     if (x.price !== "" || x.priceNote) {
@@ -450,14 +457,14 @@
   function spReset() {
     sp = { id: null, photo: "" };
     ["sp-title", "sp-price", "sp-note", "sp-desc", "sp-start", "sp-end"].forEach(function (id) { $(id).value = ""; });
-    $("sp-store").value = "both"; $("sp-active").checked = true; $("sp-photo").value = "";
+    $("sp-store").value = "both"; $("sp-active").checked = true; $("sp-clear").checked = false; $("sp-photo").value = "";
     $("sp-form-title").textContent = "Add a special"; show("sp-cancel", false); spPreview();
   }
   function spEdit(x) {
     sp = { id: x.id, photo: x.photo || "" };
     $("sp-title").value = x.title || ""; $("sp-price").value = x.price === "" || x.price == null ? "" : x.price;
     $("sp-note").value = x.priceNote || ""; $("sp-desc").value = x.description || ""; $("sp-store").value = x.store || "both";
-    $("sp-start").value = x.startDate || ""; $("sp-end").value = x.endDate || ""; $("sp-active").checked = x.active !== false;
+    $("sp-start").value = x.startDate || ""; $("sp-end").value = x.endDate || ""; $("sp-active").checked = x.active !== false; $("sp-clear").checked = !!x.clearance;
     $("sp-form-title").textContent = "Edit special"; show("sp-cancel", true); spPreview(); say("sp-msg", "");
     $("sp-form-title").scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -494,7 +501,7 @@
     });
   }
   function setupSpecials() {
-    ["sp-title", "sp-price", "sp-note", "sp-desc", "sp-store", "sp-start", "sp-end", "sp-active"].forEach(function (id) { $(id).addEventListener("input", spPreview); $(id).addEventListener("change", spPreview); });
+    ["sp-title", "sp-price", "sp-note", "sp-desc", "sp-store", "sp-start", "sp-end", "sp-active", "sp-clear"].forEach(function (id) { $(id).addEventListener("input", spPreview); $(id).addEventListener("change", spPreview); });
     $("sp-photo").addEventListener("change", function () {
       var f = this.files && this.files[0]; if (!f) return; say("sp-msg", "Preparing photo...");
       shrink(f).then(function (d) { sp.photo = d; spPreview(); say("sp-msg", ""); }).catch(function (e) { say("sp-msg", e.message, "err"); });

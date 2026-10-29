@@ -36,8 +36,18 @@
         <div class="field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email" maxlength="120"></div>
       </div>
       <p class="hint">Leave a phone number or an email, so we can get back to you.</p>
-      <div class="field"><label for="c-topic">What's it about?</label><select id="c-topic" name="topic"><option value="general">General question</option><option value="quote">Quote request (lumber, materials)</option><option value="used">Used equipment</option><option value="special-order">Special order</option><option value="saw-shop">Saw shop service</option><option value="job">Job application</option></select></div>
+      <div class="field"><label for="c-topic">What's it about?</label><select id="c-topic" name="topic"><option value="general">General question</option><option value="quote">Quote request (lumber, materials)</option><option value="used">New or used equipment</option><option value="parts">Parts request</option><option value="saw-shop">Saw shop service</option><option value="special-order">Special order</option><option value="job">Job application</option></select></div>
       <p class="regarding" id="c-ref-line" hidden>Regarding: <b id="c-ref-text"></b></p>
+      <div id="c-equip" hidden>
+        <div class="row2">
+          <div class="field"><label for="c-brand">Equipment brand</label><input id="c-brand" type="text" maxlength="40" placeholder="Stihl, Ferris, Scag..."></div>
+          <div class="field"><label for="c-model">Model</label><input id="c-model" type="text" maxlength="40" placeholder="On the label or sticker"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="c-serial">Serial number</label><input id="c-serial" type="text" maxlength="40" placeholder="Helps us find the right part"></div>
+          <div class="field" id="c-part-field"><label for="c-part">Part needed</label><input id="c-part" type="text" maxlength="80" placeholder="Name or part number, if you have it"></div>
+        </div>
+      </div>
       <div class="field"><label for="c-msg">Message <span class="req">required</span></label><textarea id="c-msg" name="message" rows="6" maxlength="2000" required placeholder="For a quote, list sizes and quantities. For a used unit or a job, tell us anything you'd like us to know."></textarea></div>
       <div class="hp" aria-hidden="true"><label for="c-website">Leave this empty</label><input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
       <div class="actions" style="margin-top:24px"><button class="btn btn-primary" type="submit" id="c-send">Send message <span class="arr" aria-hidden="true">&rarr;</span></button></div>
