@@ -64,7 +64,8 @@
       if (!msg) { say("Please add a message.", "err"); document.getElementById("c-msg").focus(); return; }
       var t = tSel.value;
       if ((t === "saw-shop" || t === "reminder") && !phone) { say("Please leave a phone number so the saw shop can call you.", "err"); document.getElementById("c-phone").focus(); return; }
-      var toShop = t === "saw-shop" || t === "reminder" || ((t === "parts" || t === "trade") && phone);
+      // Everything the saw shop handles goes to the Saw Shop app; the website Inbox keeps the hardware-side messages.
+      var toShop = t === "saw-shop" || t === "reminder" || t === "parts" || t === "trade" || t === "used";
       var problem = msg;
       if (!document.getElementById("c-equip").hidden) {
         var eq = [["Equipment", (t === "saw-shop" || t === "trade" || t === "reminder") ? v("c-etype") : ""], ["Brand", v("c-brand")], ["Model", v("c-model")],
@@ -88,8 +89,8 @@
           return sdb.ref("web_requests").push({
             name: name.slice(0, 80), phone: phone.slice(0, 30), email: email.slice(0, 120), store: storeName,
             equipType: (t === "saw-shop" || t === "trade" || t === "reminder") ? v("c-etype") : "", brand: v("c-brand").slice(0, 40), model: v("c-model").slice(0, 40), serial: v("c-serial").slice(0, 40),
-            problem: problem.slice(0, 2000), status: "new", createdAt: firebase.database.ServerValue.TIMESTAMP,
-            kind: t === "saw-shop" ? "service" : t, dropoff: t === "saw-shop" ? v("c-drop") : "",
+            problem: ((t === "used" && ref) ? "About: " + ref + "\n\n" : "") + problem.slice(0, 1800), status: "new", createdAt: firebase.database.ServerValue.TIMESTAMP,
+            kind: t === "saw-shop" ? "service" : t, ref: ref.slice(0, 120), dropoff: t === "saw-shop" ? v("c-drop") : "",
             part: t === "parts" ? v("c-part").slice(0, 200) : "", year: t === "trade" ? v("c-year").slice(0, 4) : "", hours: t === "trade" ? v("c-hours").slice(0, 8) : ""
           });
         }).then(done).catch(function () { sendToInbox(); });
