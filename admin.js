@@ -377,14 +377,48 @@
 
   // ---------- inbox ----------
   var TOPIC_TXT = { general: "General question", quote: "Quote request", used: "Equipment", parts: "Parts request", trade: "Trade-in", "saw-shop-web": "Saw shop (copy)", "special-order": "Special order", "saw-shop": "Saw shop service", job: "Job application" };
-  var inbox = [];
+  var inbox = [], inboxUnsub = null, seen = null, baseTitle = document.title;
+  // Live Inbox: new messages show up on their own, with a chime and a desktop pop-up while this page is open.
   function loadInbox() {
-    db.collection("messages").get().then(function (qs) {
+    if (inboxUnsub) inboxUnsub();
+    inboxUnsub = db.collection("messages").onSnapshot(function (qs) {
       inbox = []; qs.forEach(function (d) { var x = d.data(); x.id = d.id; inbox.push(x); });
       inbox.sort(function (a, b) { return ms(b.createdAt) - ms(a.createdAt); });
-      renderInbox(); say("inbox-msg", "");
-    }).catch(function (e) { say("inbox-msg", friendly(e), "err"); });
+      alertNew(); renderInbox(); say("inbox-msg", "");
+    }, function (e) { say("inbox-msg", friendly(e), "err"); });
   }
+  function alertsOn() { try { return localStorage.getItem("inboxAlerts") !== "off"; } catch (e) { return true; } }
+  function alertBtn() {
+    var b = $("inbox-alerts"); if (!b) return;
+    var pop = window.Notification && Notification.permission === "granted";
+    b.textContent = alertsOn() ? ("Alerts on" + (pop ? "" : " (sound only)")) : "Alerts off";
+    b.setAttribute("aria-pressed", alertsOn() ? "true" : "false");
+  }
+  function chime() {
+    try { var C = window.AudioContext || window.webkitAudioContext; if (!C) return; var ctx = new C();
+      [[880, 0], [1320, 0.18]].forEach(function (p) { var o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = p[0];
+        g.gain.setValueAtTime(0.0001, ctx.currentTime + p[1]); g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + p[1] + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + p[1] + 0.5); o.connect(g); g.connect(ctx.destination); o.start(ctx.currentTime + p[1]); o.stop(ctx.currentTime + p[1] + 0.55); });
+    } catch (e) {}
+  }
+  function alertNew() {
+    var open = inbox.filter(function (m) { return m.status !== "handled"; });
+    document.title = (open.length ? "(" + open.length + ") " : "") + baseTitle;
+    if (seen === null) { seen = {}; inbox.forEach(function (m) { seen[m.id] = 1; }); alertBtn(); return; }
+    var fresh = open.filter(function (m) { return !seen[m.id]; }); inbox.forEach(function (m) { seen[m.id] = 1; });
+    if (!fresh.length || !alertsOn()) return;
+    chime();
+    if (window.Notification && Notification.permission === "granted") {
+      var m = fresh[0];
+      try { var n = new Notification("New website message: " + (TOPIC_TXT[m.topic] || "Message"), { body: (fresh.length > 1 ? fresh.length + " new. " : "") + (m.name || "") + (m.store && m.store !== "either" ? " \u00b7 " + m.store[0].toUpperCase() + m.store.slice(1) : ""), tag: "inbox" });
+        n.onclick = function () { window.focus(); $("t-inbox").click(); n.close(); }; } catch (e) {}
+    }
+  }
+  if ($("inbox-alerts")) $("inbox-alerts").addEventListener("click", function () {
+    var on = !alertsOn(); try { localStorage.setItem("inboxAlerts", on ? "on" : "off"); } catch (e) {}
+    if (on) { chime(); if (window.Notification && Notification.permission === "default") Notification.requestPermission().then(alertBtn); }
+    alertBtn();
+  });
   function renderInbox() {
     var showDone = $("inbox-done").checked, ul = $("msg-list"); ul.textContent = "";
     var fresh = inbox.filter(function (m) { return m.status !== "handled"; }).length;

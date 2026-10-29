@@ -43,12 +43,12 @@
     if (ref) { document.getElementById("c-ref-text").textContent = ref; document.getElementById("c-ref-line").hidden = false; }
     var equip = document.getElementById("c-equip"), partField = document.getElementById("c-part-field");
     var syncEquip = function () {
-      var t = tSel.value; equip.hidden = !(t === "parts" || t === "saw-shop" || t === "trade");
+      var t = tSel.value; equip.hidden = !(t === "parts" || t === "saw-shop" || t === "trade" || t === "reminder");
       partField.hidden = t !== "parts";
-      document.getElementById("c-etype-row").hidden = !(t === "saw-shop" || t === "trade");
+      document.getElementById("c-etype-row").hidden = !(t === "saw-shop" || t === "trade" || t === "reminder");
       document.getElementById("c-drop-field").hidden = t !== "saw-shop";
       document.getElementById("c-trade-row").hidden = t !== "trade";
-      document.getElementById("c-serial").closest(".field").hidden = t === "trade";
+      document.getElementById("c-serial").closest(".field").hidden = t === "trade" || t === "reminder";
     };
     tSel.addEventListener("change", syncEquip); syncEquip();
     var status = document.getElementById("c-status");
@@ -60,13 +60,14 @@
       if (!name) { say("Please add your name.", "err"); document.getElementById("c-name").focus(); return; }
       if (!phone && !email) { say("Please leave a phone number or an email so we can reply.", "err"); document.getElementById("c-phone").focus(); return; }
       if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say("That email address doesn't look right.", "err"); document.getElementById("c-email").focus(); return; }
+      if (!msg && tSel.value === "reminder") msg = "Please remind me when it's time for a tune-up.";
       if (!msg) { say("Please add a message.", "err"); document.getElementById("c-msg").focus(); return; }
       var t = tSel.value;
-      if (t === "saw-shop" && !phone) { say("Please leave a phone number so the saw shop can call you.", "err"); document.getElementById("c-phone").focus(); return; }
-      var toShop = t === "saw-shop" || ((t === "parts" || t === "trade") && phone);
+      if ((t === "saw-shop" || t === "reminder") && !phone) { say("Please leave a phone number so the saw shop can call you.", "err"); document.getElementById("c-phone").focus(); return; }
+      var toShop = t === "saw-shop" || t === "reminder" || ((t === "parts" || t === "trade") && phone);
       var problem = msg;
       if (!document.getElementById("c-equip").hidden) {
-        var eq = [["Equipment", (t === "saw-shop" || t === "trade") ? v("c-etype") : ""], ["Brand", v("c-brand")], ["Model", v("c-model")],
+        var eq = [["Equipment", (t === "saw-shop" || t === "trade" || t === "reminder") ? v("c-etype") : ""], ["Brand", v("c-brand")], ["Model", v("c-model")],
           ["Year", t === "trade" ? v("c-year") : ""], ["Hours", t === "trade" ? v("c-hours") : ""],
           ["Serial", t !== "trade" ? v("c-serial") : ""], ["Part needed", t === "parts" ? v("c-part") : ""], ["Drop-off", t === "saw-shop" ? v("c-drop") : ""]]
           .filter(function (p) { return p[1]; }).map(function (p) { return p[0] + ": " + p[1]; });
@@ -86,7 +87,7 @@
         sawShopDb().then(function (sdb) {
           return sdb.ref("web_requests").push({
             name: name.slice(0, 80), phone: phone.slice(0, 30), email: email.slice(0, 120), store: storeName,
-            equipType: (t === "saw-shop" || t === "trade") ? v("c-etype") : "", brand: v("c-brand").slice(0, 40), model: v("c-model").slice(0, 40), serial: v("c-serial").slice(0, 40),
+            equipType: (t === "saw-shop" || t === "trade" || t === "reminder") ? v("c-etype") : "", brand: v("c-brand").slice(0, 40), model: v("c-model").slice(0, 40), serial: v("c-serial").slice(0, 40),
             problem: problem.slice(0, 2000), status: "new", createdAt: firebase.database.ServerValue.TIMESTAMP,
             kind: t === "saw-shop" ? "service" : t, dropoff: t === "saw-shop" ? v("c-drop") : "",
             part: t === "parts" ? v("c-part").slice(0, 200) : "", year: t === "trade" ? v("c-year").slice(0, 4) : "", hours: t === "trade" ? v("c-hours").slice(0, 8) : ""
@@ -224,7 +225,7 @@
   function unitCard(u) {
     var card = document.createElement("article"); card.className = "unit" + (u.clearance ? " is-clearance" : "");
     if (u.clearance) { var rb = document.createElement("span"); rb.className = "ribbon"; rb.textContent = "Clearance"; card.appendChild(rb); }
-    var photos = Array.isArray(u.photos) ? u.photos.filter(function (x) { return typeof x === "string" && x.indexOf("data:image/") === 0; }) : [];
+    var photos = Array.isArray(u.photos) ? u.photos.filter(function (x) { return typeof x === "string" && (x.indexOf("data:image/") === 0 || x.indexOf("https://firebasestorage.googleapis.com/") === 0); }) : [];
     var title = [u.condition === "new" ? "New" : u.year, u.brand, u.model].filter(Boolean).join(" ");
     if (photos.length) {
       var box = document.createElement("div"); box.className = "unit-photo";
@@ -355,10 +356,16 @@
       applyBanner(s.banner); applyStores(s.stores); applyBrands(s.brands);
     }).catch(function () { /* keep the built-in content */ });
     if (document.getElementById("used-units-grid") || document.getElementById("clearance-grid")) {
-      db.collection("usedUnits").where("sold", "==", false).get().then(function (qs) {
-        var units = []; qs.forEach(function (d) { units.push(d.data()); });
-        applyUnits(units);
-      }).catch(function () { /* keep the empty state */ });
+      // Units entered on the admin page, plus repaired trade-ins posted from the Saw Shop app.
+      var fromAdmin = db.collection("usedUnits").where("sold", "==", false).get().then(function (qs) {
+        var units = []; qs.forEach(function (d) { units.push(d.data()); }); return units;
+      }).catch(function () { return []; });
+      var fromShop = fetch(SAWSHOP_FB.databaseURL + "/public_listings.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (obj) {
+        return Object.keys(obj || {}).map(function (k) { var L = obj[k] || {};
+          return { brand: L.brand, model: L.model, year: L.year, hours: L.hours ? Number(L.hours) : "", price: L.price, store: L.store, description: L.description,
+            photos: L.photos, condition: "used", sold: false, createdAt: L.postedAt || 0 }; });
+      }).catch(function () { return []; });
+      Promise.all([fromAdmin, fromShop]).then(function (a) { applyUnits(a[0].concat(a[1])); });
     }
   }).catch(function () { /* offline or blocked: the static content stays */ });
 })();
