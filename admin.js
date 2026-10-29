@@ -53,14 +53,15 @@
     $("signout").addEventListener("click", function () { auth.signOut(); });
     $("login").addEventListener("submit", function (e) {
       e.preventDefault(); say("login-msg", "");
-      auth.signInWithEmailAndPassword($("email").value.trim(), $("pw").value).catch(function (err) { say("login-msg", friendly(err), "err"); });
+      var id = $("email").value.trim(); if (id && id.indexOf("@") < 0) id = loginFor(id);
+      auth.signInWithEmailAndPassword(id, $("pw").value).catch(function (err) { say("login-msg", friendly(err), "err"); });
     });
   }
 
   var booted = false;
   function boot() {
     if (booted) return; booted = true;
-    setupTabs(); setupUnits(); setupStores(); setupBrands(); setupBanner(); setupInbox(); setupSpecials(); setupJobs();
+    setupTabs(); setupUnits(); setupStores(); setupBrands(); setupBanner(); setupInbox(); setupSpecials(); setupJobs(); setupStaff();
     db.collection("site").doc("settings").get().then(function (snap) {
       if (snap.exists) {
         var s = snap.data() || {};
@@ -70,7 +71,76 @@
       }
       fillStores(); fillBrands(); fillBanner();
     }).catch(function (e) { say("stores-msg", friendly(e), "err"); fillStores(); fillBrands(); fillBanner(); });
-    loadUnits(); loadInbox(); loadSpecials(); loadJobs();
+    loadUnits(); loadInbox(); loadSpecials(); loadJobs(); loadStaff();
+  }
+
+  // ---------- staff logins ----------
+  // People without an email sign in with just their name; behind the scenes that is name@millerhardware.local.
+  function loginFor(name) { return String(name).toLowerCase().replace(/[^a-z0-9]+/g, "") + "@millerhardware.local"; }
+  var staff = [], adder = null;
+  function loadStaff() {
+    db.collection("admins").get().then(function (qs) {
+      staff = []; qs.forEach(function (d) { var x = d.data() || {}; x.id = d.id; staff.push(x); });
+      staff.sort(function (a, b) { return String(a.name || "").localeCompare(String(b.name || "")); });
+      renderStaff(); say("st-list-msg", "");
+    }).catch(function (e) { say("st-list-msg", friendly(e), "err"); });
+  }
+  function renderStaff() {
+    var ul = $("st-list"); ul.textContent = "";
+    staff.forEach(function (p) {
+      var li = el("li"); var info = el("div", "info"); var b = el("b", "", p.name || "(no name)");
+      if (user && p.id === user.uid) b.appendChild(el("span", "badge", "You"));
+      info.appendChild(b);
+      var login = p.email ? (/@millerhardware\.local$/.test(p.email) ? "Signs in as: " + p.email.split("@")[0] : p.email) : "";
+      info.appendChild(el("span", "", [STORE_TXT[p.store] || "", login].filter(Boolean).join(" · "))); li.appendChild(info);
+      var acts = el("div", "acts");
+      if (p.email && !/@millerhardware\.local$/.test(p.email)) actBtn(acts, "Send password reset", "btn-line", function () {
+        auth.sendPasswordResetEmail(p.email).then(function () { say("st-list-msg", "Reset email sent to " + p.email + ".", "ok"); }).catch(function (e) { say("st-list-msg", friendly(e), "err"); });
+      });
+      if (!user || p.id !== user.uid) actBtn(acts, "Remove", "btn-line", function () {
+        confirmDelete(acts, "Remove " + (p.name || "this person") + "'s access?", function () {
+          db.collection("admins").doc(p.id).delete().then(function () { staff = staff.filter(function (y) { return y.id !== p.id; }); renderStaff(); say("st-list-msg", "Access removed.", "ok"); })
+            .catch(function (e) { say("st-list-msg", friendly(e), "err"); });
+        }, renderStaff);
+      });
+      li.appendChild(acts); ul.appendChild(li);
+    });
+  }
+  function setupStaff() {
+    var prev = function () {
+      var n = $("st-name").value.trim(), em = $("st-email").value.trim();
+      $("st-preview").textContent = n ? (em ? n + " signs in with " + em + "." : n + " signs in with the name \u201c" + loginFor(n).split("@")[0] + "\u201d and the password.") : "";
+    };
+    $("st-name").addEventListener("input", prev); $("st-email").addEventListener("input", prev);
+    $("st-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = $("st-name").value.trim(), em = $("st-email").value.trim().toLowerCase(), pw = $("st-pw").value, store = $("st-store").value;
+      if (!name) { say("st-msg", "Enter their name.", "err"); return; }
+      if (em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { say("st-msg", "That email doesn't look right.", "err"); return; }
+      if (pw.length < 8) { say("st-msg", "The password needs at least 8 characters.", "err"); return; }
+      var login = em || loginFor(name);
+      if (staff.some(function (p) { return (p.email || "").toLowerCase() === login; })) { say("st-msg", "That person already has a login.", "err"); return; }
+      var btn = $("st-add"); btn.disabled = true; say("st-msg", "Adding...");
+      // A second, throwaway connection creates the login, so you stay signed in as yourself.
+      adder = adder || firebase.initializeApp(cfg, "staff-adder");
+      var a = adder.auth();
+      a.setPersistence(firebase.auth.Auth.Persistence.NONE).then(function () { return a.createUserWithEmailAndPassword(login, pw); })
+        .then(function (cred) {
+          var rec = { name: name.slice(0, 60), email: login, store: store, addedBy: user.email || "", addedAt: firebase.firestore.FieldValue.serverTimestamp() };
+          return db.collection("admins").doc(cred.user.uid).set(rec).then(function () { a.signOut(); rec.id = cred.user.uid; return rec; });
+        })
+        .then(function (rec) {
+          staff.push(rec); staff.sort(function (x, y) { return String(x.name).localeCompare(String(y.name)); }); renderStaff();
+          $("st-form").reset(); $("st-preview").textContent = "";
+          say("st-msg", rec.name + " is added. They sign in at this page with " + (em ? em : "the name \u201c" + login.split("@")[0] + "\u201d") + " and the password you set.", "ok");
+        })
+        .catch(function (err) {
+          var c = err && err.code || "";
+          say("st-msg", c === "auth/email-already-in-use" ? "There's already a login with that email or name. Try a different one, like adding a last initial." :
+            c === "auth/weak-password" ? "That password is too weak. Use at least 8 characters." : friendly(err), "err");
+        })
+        .then(function () { btn.disabled = false; });
+    });
   }
 
   function merge(base, over) {
@@ -83,7 +153,7 @@
 
   // ---------- tabs ----------
   function setupTabs() {
-    var tabs = ["inbox", "units", "specials", "jobs", "stores", "brands", "banner"];
+    var tabs = ["inbox", "units", "specials", "jobs", "stores", "brands", "banner", "staff"];
     tabs.forEach(function (k) {
       $("t-" + k).addEventListener("click", function () {
         tabs.forEach(function (j) { $("t-" + j).setAttribute("aria-selected", j === k ? "true" : "false"); show("p-" + j, j === k); });

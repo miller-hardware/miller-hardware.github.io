@@ -50,10 +50,17 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
-    // The staff list. A signed-in user may read only their own entry. Edited by hand in the Firebase console.
+    // The staff list. Everyone reads their own entry; staff can see the list, add people and remove others (not themselves).
     match /admins/{uid} {
-      allow get: if request.auth != null && request.auth.uid == uid;
-      allow list, write: if false;
+      allow get: if request.auth != null && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['name', 'email', 'store', 'addedBy', 'addedAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 60
+        && request.resource.data.email is string && request.resource.data.email.size() <= 120
+        && request.resource.data.store in ['harrison', 'yellville', 'both'];
+      allow update: if false;
+      allow delete: if isAdmin() && request.auth.uid != uid;
     }
   }
 }

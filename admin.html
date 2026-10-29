@@ -102,7 +102,7 @@ body{padding-bottom:0}
   <section id="s-login" class="box narrow hidden">
     <h2>Sign in</h2>
     <form id="login" novalidate>
-      <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="email">Email or name</label><input id="email" type="text" autocapitalize="none" autocomplete="username" required></div>
       <div class="field"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required></div>
       <div class="btns"><button class="btn btn-primary" type="submit">Sign in</button></div>
       <p class="msg err" id="login-msg" role="alert"></p>
@@ -124,6 +124,7 @@ body{padding-bottom:0}
       <button role="tab" id="t-stores" aria-selected="false" aria-controls="p-stores">Stores and hours</button>
       <button role="tab" id="t-brands" aria-selected="false" aria-controls="p-brands">Brands</button>
       <button role="tab" id="t-banner" aria-selected="false" aria-controls="p-banner">Announcement</button>
+      <button role="tab" id="t-staff" aria-selected="false" aria-controls="p-staff">Staff logins</button>
     </div>
 
     <!-- inbox -->
@@ -271,6 +272,28 @@ body{padding-bottom:0}
           <p class="msg" id="b-msg" role="status"></p>
         </form>
       </div>
+    </div>
+
+    <!-- staff logins -->
+    <div id="p-staff" role="tabpanel" aria-labelledby="t-staff" class="hidden">
+      <div class="box">
+        <h2>Add a staff login</h2>
+        <p class="note">Gives someone access to this admin page. Use their real email if they have one, so they can reset a forgotten password themselves. No email? Leave it blank and they sign in with just their name.</p>
+        <form id="st-form" novalidate autocomplete="off">
+          <div class="row2">
+            <div class="field"><label for="st-name">Name</label><input id="st-name" type="text" maxlength="60" placeholder="Bree"></div>
+            <div class="field"><label for="st-store">Store</label><select id="st-store"><option value="harrison">Harrison</option><option value="yellville">Yellville</option><option value="both">Both stores</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="st-email">Email (optional)</label><input id="st-email" type="email" maxlength="120" autocapitalize="none" autocomplete="off" placeholder="name@example.com"></div>
+            <div class="field"><label for="st-pw">Starting password</label><input id="st-pw" type="text" minlength="8" maxlength="64" autocomplete="new-password" placeholder="At least 8 characters"></div>
+          </div>
+          <p class="note" id="st-preview"></p>
+          <div class="btns"><button class="btn btn-primary" type="submit" id="st-add">Add login</button></div>
+          <p class="msg" id="st-msg" role="status"></p>
+        </form>
+      </div>
+      <div class="box"><h2>Who has access</h2><p class="note">Remove takes away access right away. Their login still exists but can't open anything here.</p><p class="msg" id="st-list-msg" role="status"></p><ul class="list" id="st-list"></ul></div>
     </div>
   </section>
 </main>
