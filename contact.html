@@ -36,9 +36,17 @@
         <div class="field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email" maxlength="120"></div>
       </div>
       <p class="hint">Leave a phone number or an email, so we can get back to you.</p>
-      <div class="field"><label for="c-topic">What's it about?</label><select id="c-topic" name="topic"><option value="general">General question</option><option value="quote">Quote request (lumber, materials)</option><option value="used">New or used equipment</option><option value="parts">Parts request</option><option value="saw-shop">Saw shop service</option><option value="special-order">Special order</option><option value="job">Job application</option></select></div>
+      <div class="field"><label for="c-topic">What's it about?</label><select id="c-topic" name="topic"><option value="general">General question</option><option value="quote">Quote request (lumber, materials)</option><option value="used">New or used equipment</option><option value="parts">Parts request</option><option value="saw-shop">Saw shop service or repair</option><option value="trade">Trade-in value</option><option value="special-order">Special order</option><option value="job">Job application</option></select></div>
       <p class="regarding" id="c-ref-line" hidden>Regarding: <b id="c-ref-text"></b></p>
       <div id="c-equip" hidden>
+        <div class="row2" id="c-etype-row">
+          <div class="field"><label for="c-etype">Type of equipment</label><select id="c-etype"><option>Chainsaw</option><option>Trimmer / Weedeater</option><option>Mower — Push</option><option>Mower — Riding</option><option>Zero Turn Mower</option><option>Blower</option><option>Generator</option><option>Pressure Washer</option><option>Hedge Trimmer</option><option>Tiller / Cultivator</option><option>Edger</option><option>Log Splitter</option><option>Auger</option><option>Other</option></select></div>
+          <div class="field" id="c-drop-field"><label for="c-drop">Drop-off or pickup?</label><select id="c-drop"><option value="I'll drop it off">I'll drop it off</option><option value="Please pick it up">Please pick it up (ask about pickup)</option><option value="Not sure yet">Not sure yet</option></select></div>
+        </div>
+        <div class="row2" id="c-trade-row">
+          <div class="field"><label for="c-year">Year</label><input id="c-year" type="text" inputmode="numeric" maxlength="4" placeholder="About when you bought it"></div>
+          <div class="field"><label for="c-hours">Hours</label><input id="c-hours" type="text" inputmode="numeric" maxlength="8" placeholder="From the hour meter"></div>
+        </div>
         <div class="row2">
           <div class="field"><label for="c-brand">Equipment brand</label><input id="c-brand" type="text" maxlength="40" placeholder="Stihl, Ferris, Scag..."></div>
           <div class="field"><label for="c-model">Model</label><input id="c-model" type="text" maxlength="40" placeholder="On the label or sticker"></div>

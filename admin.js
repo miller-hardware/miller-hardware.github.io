@@ -376,7 +376,7 @@
   function ms(v) { return v && typeof v.toMillis === "function" ? v.toMillis() : (typeof v === "number" ? v : 0); }
 
   // ---------- inbox ----------
-  var TOPIC_TXT = { general: "General question", quote: "Quote request", used: "Equipment", parts: "Parts request", "special-order": "Special order", "saw-shop": "Saw shop service", job: "Job application" };
+  var TOPIC_TXT = { general: "General question", quote: "Quote request", used: "Equipment", parts: "Parts request", trade: "Trade-in", "saw-shop-web": "Saw shop (copy)", "special-order": "Special order", "saw-shop": "Saw shop service", job: "Job application" };
   var inbox = [];
   function loadInbox() {
     db.collection("messages").get().then(function (qs) {

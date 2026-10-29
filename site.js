@@ -43,8 +43,12 @@
     if (ref) { document.getElementById("c-ref-text").textContent = ref; document.getElementById("c-ref-line").hidden = false; }
     var equip = document.getElementById("c-equip"), partField = document.getElementById("c-part-field");
     var syncEquip = function () {
-      var t = tSel.value; equip.hidden = !(t === "parts" || t === "saw-shop");
+      var t = tSel.value; equip.hidden = !(t === "parts" || t === "saw-shop" || t === "trade");
       partField.hidden = t !== "parts";
+      document.getElementById("c-etype-row").hidden = !(t === "saw-shop" || t === "trade");
+      document.getElementById("c-drop-field").hidden = t !== "saw-shop";
+      document.getElementById("c-trade-row").hidden = t !== "trade";
+      document.getElementById("c-serial").closest(".field").hidden = t === "trade";
     };
     tSel.addEventListener("change", syncEquip); syncEquip();
     var status = document.getElementById("c-status");
@@ -57,8 +61,13 @@
       if (!phone && !email) { say("Please leave a phone number or an email so we can reply.", "err"); document.getElementById("c-phone").focus(); return; }
       if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say("That email address doesn't look right.", "err"); document.getElementById("c-email").focus(); return; }
       if (!msg) { say("Please add a message.", "err"); document.getElementById("c-msg").focus(); return; }
+      var t = tSel.value;
+      if (t === "saw-shop" && !phone) { say("Please leave a phone number so the saw shop can call you.", "err"); document.getElementById("c-phone").focus(); return; }
+      var problem = msg;
       if (!document.getElementById("c-equip").hidden) {
-        var eq = [["Brand", v("c-brand")], ["Model", v("c-model")], ["Serial", v("c-serial")], ["Part needed", v("c-part")]]
+        var eq = [["Equipment", (t === "saw-shop" || t === "trade") ? v("c-etype") : ""], ["Brand", v("c-brand")], ["Model", v("c-model")],
+          ["Year", t === "trade" ? v("c-year") : ""], ["Hours", t === "trade" ? v("c-hours") : ""],
+          ["Serial", t !== "trade" ? v("c-serial") : ""], ["Part needed", t === "parts" ? v("c-part") : ""], ["Drop-off", t === "saw-shop" ? v("c-drop") : ""]]
           .filter(function (p) { return p[1]; }).map(function (p) { return p[0] + ": " + p[1]; });
         if (eq.length) msg = eq.join("\n") + "\n\n" + msg;
       }
@@ -66,17 +75,50 @@
       if (v("c-website") || Date.now() - formOpened < 3000) { form.reset(); say("Thanks. Your message was sent.", "ok"); return; }
       if (!dbReady) { say("Sorry, the form isn't available right now. Please call Harrison 870-741-3493 or Yellville 870-449-4255.", "err"); return; }
       var btnSend = document.getElementById("c-send"); btnSend.disabled = true; say("Sending...");
+      var done = function () {
+        form.reset(); document.getElementById("c-ref-line").hidden = true; syncEquip();
+        say("Thanks, " + name.split(" ")[0] + ". Your message was sent. We'll call or email you back.", "ok"); btnSend.disabled = false;
+      };
+      if (t === "saw-shop") {
+        // Service requests go straight into the Saw Shop app's Web Requests list.
+        var storeName = sSel.value === "yellville" ? "Yellville" : "Harrison";
+        sawShopDb().then(function (sdb) {
+          return sdb.ref("web_requests").push({
+            name: name.slice(0, 80), phone: phone.slice(0, 30), email: email.slice(0, 120), store: storeName,
+            equipType: v("c-etype"), brand: v("c-brand").slice(0, 40), model: v("c-model").slice(0, 40), serial: v("c-serial").slice(0, 40),
+            problem: problem.slice(0, 2000), dropoff: v("c-drop"), status: "new", createdAt: firebase.database.ServerValue.TIMESTAMP
+          });
+        }).then(done).catch(function () { sendToInbox(); });
+        return;
+      }
+      sendToInbox();
+      function sendToInbox() {
       dbReady.collection("messages").add({
         name: name.slice(0, 80), phone: phone.slice(0, 30), email: email.slice(0, 120),
         store: sSel.value, topic: tSel.value, ref: ref, message: msg.slice(0, 2000),
         status: "new", createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(function () {
-        form.reset(); document.getElementById("c-ref-line").hidden = true; syncEquip();
-        say("Thanks, " + name.split(" ")[0] + ". Your message was sent. We'll call or email you back.", "ok");
-      }).catch(function () {
-        say("Sorry, that didn't go through. Please call Harrison 870-741-3493 or Yellville 870-449-4255.", "err");
-      }).then(function () { btnSend.disabled = false; });
+      }).then(done).catch(function () {
+        say("Sorry, that didn't go through. Please call Harrison 870-741-3493 or Yellville 870-449-4255.", "err"); btnSend.disabled = false;
+      });
+      }
     });
+  }
+
+  // The Saw Shop app's own database (a separate Firebase project). The website may only add service requests to it.
+  var SAWSHOP_FB = { apiKey: "AIzaSyDNEl1mXtNLGN0nsvr1lZi7SJzsiypJFLM", authDomain: "millersawshop-f716a.firebaseapp.com",
+    databaseURL: "https://millersawshop-f716a-default-rtdb.firebaseio.com", projectId: "millersawshop-f716a" };
+  var _sawDb = null;
+  function sawShopDb() {
+    if (_sawDb) return _sawDb;
+    _sawDb = new Promise(function (resolve, reject) {
+      if (!window.firebase) { reject(new Error("no firebase")); return; }
+      var go = function () { try { var app = firebase.apps.filter(function (a) { return a.name === "sawshop"; })[0] || firebase.initializeApp(SAWSHOP_FB, "sawshop"); resolve(app.database()); } catch (e) { reject(e); } };
+      if (firebase.database) { go(); return; }
+      var s = document.createElement("script"); s.src = "https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js";
+      s.onload = go; s.onerror = reject; document.head.appendChild(s);
+    });
+    _sawDb.catch(function () { _sawDb = null; });
+    return _sawDb;
   }
 
   // ---------- live content ----------

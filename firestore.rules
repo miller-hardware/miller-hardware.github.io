@@ -21,7 +21,7 @@ service cloud.firestore {
         && (d.get('phone', '').size() > 0 || d.get('email', '').size() > 0)
         && d.get('ref', '') is string && d.get('ref', '').size() <= 120
         && d.store in ['harrison', 'yellville', 'either']
-        && d.topic in ['general', 'quote', 'used', 'parts', 'special-order', 'saw-shop', 'job']
+        && d.topic in ['general', 'quote', 'used', 'parts', 'trade', 'special-order', 'saw-shop', 'job']
         && d.status == 'new'
         && d.createdAt == request.time;
     }
