@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Staff admin | Miller Hardware</title>
+<link rel="preload" href="fonts/inter-tight.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css">
+<style>
+body{padding-bottom:0}
+.adm-top{background:var(--band);color:#fff;border-bottom:3px solid var(--red)}
+.adm-top .wrap{display:flex;align-items:center;gap:16px;min-height:64px}
+.adm-top img{height:40px;width:auto}
+.adm-top .who{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:.95rem;color:#E8E0E1;flex-wrap:wrap;justify-content:flex-end}
+.adm-top a{color:#fff}
+.adm{padding-block:28px 64px}
+.adm h1{font-size:clamp(2rem,5vw,2.8rem)}
+.adm h2{font-size:1.7rem;margin-bottom:14px}
+.box{box-shadow:var(--shadow)}
+.adm h2::after{display:none}
+.adm .note{color:var(--muted);max-width:68ch;margin-top:8px}
+.box{background:var(--panel);border:1px solid var(--rule);border-top:4px solid var(--red);padding:22px;margin-top:20px}
+.box.narrow{max-width:460px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-top:22px;border-bottom:2px solid var(--rule)}
+.tabs button{font:600 15px var(--sans);letter-spacing:.02em;padding:12px 16px;background:none;border:0;border-bottom:4px solid transparent;margin-bottom:-2px;color:var(--muted);cursor:pointer;min-height:48px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--red)}
+.field{display:flex;flex-direction:column;gap:5px;margin-top:14px;min-width:0}
+.field label,.field .lbl2{font-weight:700;font-size:.95rem}
+.field small{color:var(--muted)}
+.adm input[type=text],.adm input[type=email],.adm input[type=password],.adm input[type=number],.adm select,.adm textarea{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--rule);border-radius:2px;padding:10px 12px;min-height:46px;width:100%}
+.adm textarea{min-height:92px;resize:vertical}
+.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:0 16px}
+.check{display:flex;align-items:center;gap:10px;margin-top:16px;font-weight:700}
+.check input{width:22px;height:22px;accent-color:var(--red)}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.btn-sm{min-height:42px;font-size:1.05rem;padding:0 16px}
+.btn-danger{background:#7A0A1D;color:#fff}
+.btn-danger:hover{background:#5E0716}
+.msg{margin-top:14px;padding:10px 14px;border-left:5px solid var(--rule);background:var(--bg);font-weight:600}
+.msg.ok{border-color:#1B7F3B}
+.msg.err{border-color:var(--red)}
+.msg:empty{display:none}
+.split{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px;align-items:start}
+.thumbs{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.thumb{position:relative;width:104px;height:78px;background:#2E2A2B}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb button{position:absolute;top:-8px;right:-8px;width:28px;height:28px;border-radius:50%;border:2px solid #fff;background:var(--red);color:#fff;font-weight:700;cursor:pointer;line-height:1}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--rule);flex-wrap:wrap}
+.list li:first-child{border-top:0}
+.list .pic{width:72px;height:54px;background:#2E2A2B;flex:none}
+.list .pic img{width:100%;height:100%;object-fit:cover}
+.list .info{flex:1 1 220px;min-width:0}
+.list .info b{display:block}
+.list .info span{color:var(--muted);font-size:.92rem}
+.list .acts{display:flex;gap:8px;flex-wrap:wrap}
+.badge{display:inline-block;font:500 11.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;background:var(--rule);color:var(--ink);margin-left:6px;vertical-align:middle}
+.badge.sold{background:#7A0A1D;color:#fff}
+.badge.new{background:var(--red);color:#fff}
+.msgs li{display:block}
+.msg-item.done{opacity:.6}
+.msg-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.msg-when{color:var(--muted);font-size:.9rem}
+.msg-ref{margin-top:6px;font-weight:600;font-size:.95rem}
+.msg-body{margin-top:8px;white-space:pre-line}
+.msg-contact{margin-top:8px;font-weight:600}
+.msgs .acts{margin-top:10px}
+.adm input[type=date],.adm input[type=tel]{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--rule);border-radius:2px;padding:10px 12px;min-height:46px;width:100%}
+.brand-edit{margin-top:22px}
+.brand-edit h3{font-size:1.5rem;margin-bottom:8px}
+.brow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:8px;margin-top:8px;align-items:center}
+.brow .mini{display:flex;gap:4px}
+.mini button{min-width:40px;min-height:40px;border:2px solid var(--rule);background:var(--bg);color:var(--ink);cursor:pointer;font-weight:700}
+.sticky-prev{position:sticky;top:12px}
+.hidden{display:none!important}
+@media (max-width:860px){
+  .split{grid-template-columns:minmax(0,1fr)}
+  .sticky-prev{position:static}
+  .brow{grid-template-columns:minmax(0,1fr) auto}
+  .brow input:nth-child(2){grid-column:1}
+  .tabs button{padding:10px 10px;font-size:1.02rem}
+}
+</style>
+</head>
+<body>
+<header class="adm-top on-dark">
+  <div class="wrap">
+    <a href="index.html"><img src="img/logo-white.png" width="396" height="214" alt="Miller Hardware Company"></a>
+    <div class="who"><span id="who"></span><a href="index.html">View site</a><button id="signout" class="btn btn-ghost btn-sm hidden" type="button">Sign out</button></div>
+  </div>
+</header>
+
+<main class="wrap adm">
+  <h1>Staff admin</h1>
+
+  <section id="s-setup" class="box hidden" aria-live="polite">
+    <h2>Not connected yet</h2>
+    <p class="note">This page needs a Firebase project before it can save anything. Open <b>README-ADMIN-SETUP.md</b> and follow the steps, then paste your project's values into <b>firebase-config.js</b>. The public site keeps working with its built-in content in the meantime.</p>
+  </section>
+
+  <section id="s-login" class="box narrow hidden">
+    <h2>Sign in</h2>
+    <form id="login" novalidate>
+      <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required></div>
+      <div class="btns"><button class="btn btn-primary" type="submit">Sign in</button></div>
+      <p class="msg err" id="login-msg" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="s-noadmin" class="box hidden">
+    <h2>Signed in, but not approved yet</h2>
+    <p class="note">This account is not on the staff list. Ask the owner of the Firebase project to add it (README-ADMIN-SETUP.md, step 5), then reload this page.</p>
+  </section>
+
+  <section id="s-app" class="hidden">
+    <p class="note">Changes save to the live site as soon as you press Save. Each store's phone numbers are not editable here.</p>
+    <div class="tabs" role="tablist" aria-label="Admin sections">
+      <button role="tab" id="t-inbox" aria-selected="true" aria-controls="p-inbox">Inbox</button>
+      <button role="tab" id="t-units" aria-selected="false" aria-controls="p-units">Used units</button>
+      <button role="tab" id="t-specials" aria-selected="false" aria-controls="p-specials">Specials</button>
+      <button role="tab" id="t-jobs" aria-selected="false" aria-controls="p-jobs">Jobs</button>
+      <button role="tab" id="t-stores" aria-selected="false" aria-controls="p-stores">Stores and hours</button>
+      <button role="tab" id="t-brands" aria-selected="false" aria-controls="p-brands">Brands</button>
+      <button role="tab" id="t-banner" aria-selected="false" aria-controls="p-banner">Announcement</button>
+    </div>
+
+    <!-- inbox -->
+    <div id="p-inbox" role="tabpanel" aria-labelledby="t-inbox">
+      <div class="box">
+        <h2>Messages from the website</h2>
+        <p class="note">Questions, quote requests and job applications sent from the Contact page. Mark each one handled once someone has called or emailed back.</p>
+        <div class="btns" style="align-items:center;margin-top:12px">
+          <label class="check" style="margin:0"><input id="inbox-done" type="checkbox"> Show handled messages</label>
+          <button class="btn btn-line btn-sm" type="button" id="inbox-refresh">Refresh</button>
+        </div>
+        <p class="msg" id="inbox-msg" role="status"></p>
+        <ul class="list msgs" id="msg-list"></ul>
+      </div>
+    </div>
+
+    <!-- specials -->
+    <div id="p-specials" role="tabpanel" aria-labelledby="t-specials" class="hidden">
+      <div class="split">
+        <div class="box">
+          <h2 id="sp-form-title">Add a special</h2>
+          <p class="note">Specials show on the home page between their start and end dates, then drop off by themselves.</p>
+          <form id="sp-form" novalidate>
+            <div class="field"><label for="sp-title">Title</label><input id="sp-title" type="text" maxlength="80" placeholder="Bird seed, 40 lb bag"></div>
+            <div class="row2">
+              <div class="field"><label for="sp-price">Price ($)</label><input id="sp-price" type="number" inputmode="decimal" min="0" step="0.01"><small>Optional.</small></div>
+              <div class="field"><label for="sp-note">Price note</label><input id="sp-note" type="text" maxlength="40" placeholder="each, per bag, 20% off"></div>
+            </div>
+            <div class="field"><label for="sp-desc">Details</label><textarea id="sp-desc" maxlength="300"></textarea></div>
+            <div class="row2">
+              <div class="field"><label for="sp-store">Store</label><select id="sp-store"><option value="both">Both stores</option><option value="harrison">Harrison</option><option value="yellville">Yellville</option></select></div>
+              <div class="field"><label for="sp-start">Starts</label><input id="sp-start" type="date"><small>Blank = right away.</small></div>
+              <div class="field"><label for="sp-end">Ends</label><input id="sp-end" type="date"><small>Blank = until you remove it.</small></div>
+            </div>
+            <div class="field"><span class="lbl2">Photo (optional)</span><input id="sp-photo" type="file" accept="image/*"><div class="thumbs" id="sp-thumb"></div></div>
+            <label class="check"><input id="sp-active" type="checkbox" checked> Show on the website</label>
+            <div class="btns"><button class="btn btn-primary" type="submit">Save special</button><button class="btn btn-line hidden" type="button" id="sp-cancel">Cancel editing</button></div>
+            <p class="msg" id="sp-msg" role="status"></p>
+          </form>
+        </div>
+        <div class="sticky-prev"><div class="box"><h2>How it will look</h2><div id="sp-preview" class="specials-grid" style="grid-template-columns:minmax(0,1fr)"></div></div></div>
+      </div>
+      <div class="box"><h2>All specials</h2><p class="msg" id="sp-list-msg" role="status"></p><ul class="list" id="sp-list"></ul></div>
+    </div>
+
+    <!-- jobs -->
+    <div id="p-jobs" role="tabpanel" aria-labelledby="t-jobs" class="hidden">
+      <div class="box">
+        <h2 id="jb-form-title">Post a job</h2>
+        <p class="note">Open jobs show on the Careers page with an Apply button. Applications arrive in the Inbox.</p>
+        <form id="jb-form" novalidate>
+          <div class="field"><label for="jb-title">Job title</label><input id="jb-title" type="text" maxlength="80" placeholder="Yard help, Saw shop technician"></div>
+          <div class="row2">
+            <div class="field"><label for="jb-store">Store</label><select id="jb-store"><option value="both">Both stores</option><option value="harrison">Harrison</option><option value="yellville">Yellville</option></select></div>
+            <div class="field"><label for="jb-type">Type</label><select id="jb-type"><option>Full-time</option><option>Part-time</option><option>Seasonal</option></select></div>
+          </div>
+          <div class="field"><label for="jb-desc">Description</label><textarea id="jb-desc" maxlength="1500" placeholder="What the job involves, the schedule, and anything an applicant should know."></textarea></div>
+          <label class="check"><input id="jb-open" type="checkbox" checked> Open (show on the website)</label>
+          <div class="btns"><button class="btn btn-primary" type="submit">Save job</button><button class="btn btn-line hidden" type="button" id="jb-cancel">Cancel editing</button></div>
+          <p class="msg" id="jb-msg" role="status"></p>
+        </form>
+      </div>
+      <div class="box"><h2>All job posts</h2><p class="msg" id="jb-list-msg" role="status"></p><ul class="list" id="jb-list"></ul></div>
+    </div>
+
+    <!-- used units -->
+    <div id="p-units" role="tabpanel" aria-labelledby="t-units" class="hidden">
+      <div class="split">
+        <div>
+          <div class="box">
+            <h2 id="unit-form-title">Add a used unit</h2>
+            <form id="unit-form" novalidate>
+              <div class="row2">
+                <div class="field"><label for="u-brand">Brand</label><input id="u-brand" type="text" placeholder="Stihl, Ferris, Scag..." required></div>
+                <div class="field"><label for="u-model">Model</label><input id="u-model" type="text" required></div>
+              </div>
+              <div class="row2">
+                <div class="field"><label for="u-year">Year</label><input id="u-year" type="number" inputmode="numeric" min="1950" max="2100"></div>
+                <div class="field"><label for="u-hours">Hours</label><input id="u-hours" type="number" inputmode="numeric" min="0"></div>
+                <div class="field"><label for="u-price">Price ($)</label><input id="u-price" type="number" inputmode="decimal" min="0" step="1"><small>Leave blank to show "Call for price".</small></div>
+              </div>
+              <div class="field"><label for="u-store">Which store has it?</label>
+                <select id="u-store"><option value="harrison">Harrison</option><option value="yellville">Yellville</option><option value="either">Either (show both numbers)</option></select></div>
+              <div class="field"><label for="u-desc">Notes</label><textarea id="u-desc" maxlength="500" placeholder="Condition, what is included, anything a buyer should know."></textarea></div>
+              <div class="field"><span class="lbl2">Photos (up to 3)</span>
+                <input id="u-photos" type="file" accept="image/*" multiple>
+                <small>Photos are shrunk automatically to load fast. The first one is the main photo.</small>
+                <div class="thumbs" id="u-thumbs"></div>
+              </div>
+              <label class="check"><input id="u-sold" type="checkbox"> Sold (takes it off the website)</label>
+              <div class="btns">
+                <button class="btn btn-primary" type="submit" id="u-save">Save unit</button>
+                <button class="btn btn-line hidden" type="button" id="u-cancel">Cancel editing</button>
+              </div>
+              <p class="msg" id="u-msg" role="status"></p>
+            </form>
+          </div>
+        </div>
+        <div class="sticky-prev">
+          <div class="box"><h2>How it will look</h2><div id="u-preview" class="used-grid" style="margin-top:0;grid-template-columns:minmax(0,1fr)"></div></div>
+        </div>
+      </div>
+      <div class="box">
+        <h2>All units</h2>
+        <p class="msg" id="list-msg" role="status"></p>
+        <ul class="list" id="unit-list"></ul>
+      </div>
+    </div>
+
+    <!-- stores -->
+    <div id="p-stores" role="tabpanel" aria-labelledby="t-stores" class="hidden">
+      <form id="stores-form" novalidate>
+        <div class="split" id="stores-fields"></div>
+        <div class="btns"><button class="btn btn-primary" type="submit">Save stores and hours</button></div>
+        <p class="msg" id="stores-msg" role="status"></p>
+      </form>
+    </div>
+
+    <!-- brands -->
+    <div id="p-brands" role="tabpanel" aria-labelledby="t-brands" class="hidden">
+      <p class="note">These lists appear on each department page, on the home page strip and in the department cards. The second box is the small line under the name.</p>
+      <form id="brands-form" novalidate>
+        <div id="brands-fields"></div>
+        <div class="btns"><button class="btn btn-primary" type="submit">Save brands</button></div>
+        <p class="msg" id="brands-msg" role="status"></p>
+      </form>
+    </div>
+
+    <!-- banner -->
+    <div id="p-banner" role="tabpanel" aria-labelledby="t-banner" class="hidden">
+      <div class="box">
+        <h2>Announcement banner</h2>
+        <p class="note">A red bar across the top of every page. Good for holiday hours, a sale or a closure.</p>
+        <form id="banner-form" novalidate>
+          <label class="check"><input id="b-on" type="checkbox"> Show the banner</label>
+          <div class="field"><label for="b-text">Message</label><input id="b-text" type="text" maxlength="200" placeholder="Closed Thursday for Thanksgiving. Open Friday at 8."></div>
+          <div class="field"><span class="lbl2">Preview</span><div class="announce" id="b-prev" style="text-align:left"></div></div>
+          <div class="btns"><button class="btn btn-primary" type="submit">Save announcement</button></div>
+          <p class="msg" id="b-msg" role="status"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="site-data.js"></script>
+<script src="firebase-config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

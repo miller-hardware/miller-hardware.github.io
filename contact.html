@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact us | Miller Hardware</title>
+<meta name="description" content="Contact Miller Hardware in Harrison or Yellville, Arkansas. Ask a question, request a lumber quote, or ask about used equipment.">
+<meta name="theme-color" content="#1A1716">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preload" href="fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/inter-tight.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="announce" id="announce" role="status" hidden></div>
+<div class="topbar"><div class="wrap topbar-in"><span>Family owned since 1931 &middot; True Value hardware and lumber</span><span class="phones"><span>Harrison <a href="tel:+18707413493">870-741-3493</a></span><span>Yellville <a href="tel:+18704494255">870-449-4255</a></span></span></div></div>
+<header class="hdr on-dark">
+  <div class="wrap hdr-in">
+    <a class="logo" href="index.html" aria-label="Miller Hardware Company, home"><img src="img/logo-white.png" width="396" height="214" alt="Miller Hardware Company, Harrison and Yellville"></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><span></span></button>
+    <nav class="nav" id="site-nav" aria-label="Main"><ul><li><a href="index.html#departments">Departments</a></li><li><a href="saw-shop.html#used">Used equipment</a></li><li><a href="special-orders.html">Special orders</a></li><li><a href="services.html">Services</a></li><li><a href="locations.html">Stores</a></li><li><a href="about.html">About</a></li><li><a class="nav-cta" href="contact.html" aria-current="page">Contact us</a></li></ul></nav>
+  </div>
+</header>
+<main id="main">
+<section class="pagehead pagehead--plain on-dark"><div class="wrap pagehead-in"><p class="crumbs"><a href="index.html">Home</a><span class="sep">/</span>Contact us</p><h1>Ask the <em>counter.</em></h1><p class="lead">Send a question, a quote request or a note about used equipment. We'll call or email you back.</p></div></section>
+<section class="sec">
+  <div class="wrap contact">
+    <form class="form reveal" id="contact-form" novalidate>
+      <div class="row2">
+        <div class="field"><label for="c-name">Your name <span class="req">required</span></label><input id="c-name" name="name" type="text" autocomplete="name" maxlength="80" required></div>
+        <div class="field"><label for="c-store">Which store?</label><select id="c-store" name="store"><option value="harrison">Harrison</option><option value="yellville">Yellville</option><option value="either" selected>Either is fine</option></select></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label for="c-phone">Phone</label><input id="c-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30"></div>
+        <div class="field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email" maxlength="120"></div>
+      </div>
+      <p class="hint">Leave a phone number or an email, so we can get back to you.</p>
+      <div class="field"><label for="c-topic">What's it about?</label><select id="c-topic" name="topic"><option value="general">General question</option><option value="quote">Quote request (lumber, materials)</option><option value="used">Used equipment</option><option value="special-order">Special order</option><option value="saw-shop">Saw shop service</option><option value="job">Job application</option></select></div>
+      <p class="regarding" id="c-ref-line" hidden>Regarding: <b id="c-ref-text"></b></p>
+      <div class="field"><label for="c-msg">Message <span class="req">required</span></label><textarea id="c-msg" name="message" rows="6" maxlength="2000" required placeholder="For a quote, list sizes and quantities. For a used unit or a job, tell us anything you'd like us to know."></textarea></div>
+      <div class="hp" aria-hidden="true"><label for="c-website">Leave this empty</label><input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+      <div class="actions" style="margin-top:24px"><button class="btn btn-primary" type="submit" id="c-send">Send message <span class="arr" aria-hidden="true">&rarr;</span></button></div>
+      <p class="form-msg" id="c-status" role="status" aria-live="polite"></p>
+    </form>
+    <aside class="contact-side on-dark reveal">
+      <p class="eyebrow">Rather talk?</p>
+      <div class="cside-store"><h3>Harrison</h3><a class="store-phone" href="tel:+18707413493">870-741-3493</a><p><span data-store="harrison" data-f="street">2 E Necessity Ave</span><br><span data-store="harrison" data-f="csz">Harrison, AR 72601</span></p></div>
+      <div class="cside-store"><h3>Yellville</h3><a class="store-phone" href="tel:+18704494255">870-449-4255</a><p><span data-store="yellville" data-f="street">1609 Hwy 62 W</span><br><span data-store="yellville" data-f="csz">Yellville, AR 72687</span></p></div>
+      <p class="cside-note">For anything urgent, please call. Messages are read during store hours. <a class="textlink" href="locations.html">See hours</a></p>
+    </aside>
+  </div>
+</section>
+</main>
+<footer class="foot on-dark">
+  <div class="wrap foot-top">
+    <div>
+      <img src="img/logo-white.png" width="396" height="214" alt="Miller Hardware Company" loading="lazy">
+      <p class="foot-tag">Hardware, lumber and a saw shop, <em>family owned</em> since 1931.</p>
+    </div>
+    <div>
+      <h4>Departments</h4>
+      <ul><li><a href="saw-shop.html">Saw shop</a></li><li><a href="lumber.html">Lumber</a></li><li><a href="paint.html">Paint</a></li><li><a href="plumbing.html">Plumbing</a></li><li><a href="hardware-tools.html">Hardware and tools</a></li><li><a href="saw-shop.html#used">Used equipment</a></li><li><a href="special-orders.html">Special orders</a></li></ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul><li><a href="about.html">About</a></li><li><a href="services.html">Services</a></li><li><a href="careers.html">Careers</a></li><li><a href="contact.html">Contact us</a></li><li><a href="locations.html">Stores and hours</a></li></ul>
+    </div>
+    <div>
+      <h4>Visit</h4>
+      <ul>
+        <li><strong style="color:#fff">Harrison</strong></li>
+        <li><span data-store="harrison" data-f="street">2 E Necessity Ave</span><br><span data-store="harrison" data-f="csz">Harrison, AR 72601</span></li>
+        <li><a class="foot-phone" href="tel:+18707413493">870-741-3493</a></li>
+        <li style="margin-top:16px"><strong style="color:#fff">Yellville</strong></li>
+        <li><span data-store="yellville" data-f="street">1609 Hwy 62 W</span><br><span data-store="yellville" data-f="csz">Yellville, AR 72687</span></li>
+        <li><a class="foot-phone" href="tel:+18704494255">870-449-4255</a></li>
+        <li style="margin-top:16px"><a href="locations.html">Hours and directions &rarr;</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-base"><div class="wrap"><span>&copy; 2026 Miller Hardware Company</span><span>Harrison and Yellville, Arkansas &middot; True Value</span></div></div>
+</footer>
+<nav class="callbar" aria-label="Call a store"><a href="tel:+18707413493">Call Harrison<small>870-741-3493</small></a><a href="tel:+18704494255">Call Yellville<small>870-449-4255</small></a></nav>
+<script src="site-data.js"></script>
+<script src="firebase-config.js"></script>
+<script src="site.js" defer></script>
+</body>
+</html>

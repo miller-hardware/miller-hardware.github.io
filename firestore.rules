@@ -1,0 +1,59 @@
+// Firestore rules for the Miller Hardware site (project miller-hardware-site).
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // A message sent from the website's Contact page: fixed fields, sensible sizes, server time.
+    function validMessage() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['name', 'phone', 'email', 'store', 'topic', 'ref', 'message', 'status', 'createdAt'])
+        && d.keys().hasAll(['name', 'store', 'topic', 'message', 'status', 'createdAt'])
+        && d.name is string && d.name.size() > 0 && d.name.size() <= 80
+        && d.message is string && d.message.size() > 0 && d.message.size() <= 2000
+        && d.get('phone', '') is string && d.get('phone', '').size() <= 30
+        && d.get('email', '') is string && d.get('email', '').size() <= 120
+        && (d.get('phone', '').size() > 0 || d.get('email', '').size() > 0)
+        && d.get('ref', '') is string && d.get('ref', '').size() <= 120
+        && d.store in ['harrison', 'yellville', 'either']
+        && d.topic in ['general', 'quote', 'used', 'special-order', 'saw-shop', 'job']
+        && d.status == 'new'
+        && d.createdAt == request.time;
+    }
+
+    // Public site content: anyone can read it, only staff can change it.
+    match /site/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /usedUnits/{unit} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /specials/{special} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /jobs/{job} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Contact messages: anyone can send one; only staff can read, update or delete them.
+    match /messages/{msg} {
+      allow create: if validMessage();
+      allow read, update, delete: if isAdmin();
+    }
+
+    // The staff list. A signed-in user may read only their own entry. Edited by hand in the Firebase console.
+    match /admins/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+  }
+}

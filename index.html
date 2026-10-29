@@ -1,1014 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Miller Hardware | True Value Hardware in Harrison & Yellville, AR</title>
-<meta name="description" content="Miller Hardware has served Marion and Boone County since 1931. Full-service hardware, lumber, and building materials in Harrison and Yellville, Arkansas, plus a full-service Saw Shop & Small Engine Shop in Yellville.">
-<style>
-  :root {
-    --red: #c8102e;
-    --red-dark: #9c0d24;
-    --navy: #1c2b39;
-    --navy-light: #2c4257;
-    --cream: #f8f4ea;
-    --gold: #d9a441;
-    --text: #2a2a28;
-    --text-light: #5c5c58;
-    --white: #ffffff;
-    --radius: 10px;
-    --shadow: 0 4px 18px rgba(28, 43, 57, 0.10);
-    font-size: 16px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: var(--text);
-    background: var(--white);
-    line-height: 1.6;
-  }
-
-  img, svg { display: block; max-width: 100%; }
-
-  a { color: inherit; text-decoration: none; }
-
-  .container {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-
-  h1, h2, h3 {
-    font-family: Georgia, "Times New Roman", serif;
-    color: var(--navy);
-    line-height: 1.2;
-  }
-
-  h2 {
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    margin-bottom: 12px;
-  }
-
-  .eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--red);
-    margin-bottom: 8px;
-    display: block;
-  }
-
-  .section {
-    padding: 72px 0;
-  }
-
-  .section-intro {
-    max-width: 640px;
-    margin-bottom: 40px;
-  }
-
-  .section-intro p {
-    color: var(--text-light);
-    font-size: 1.05rem;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 13px 26px;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-  }
-
-  .btn:hover { transform: translateY(-1px); }
-
-  .btn-primary {
-    background: var(--red);
-    color: var(--white);
-  }
-  .btn-primary:hover { background: var(--red-dark); }
-
-  .btn-outline {
-    background: transparent;
-    border-color: var(--white);
-    color: var(--white);
-  }
-  .btn-outline:hover { background: rgba(255,255,255,0.12); }
-
-  .btn-navy {
-    background: var(--navy);
-    color: var(--white);
-  }
-  .btn-navy:hover { background: var(--navy-light); }
-
-  /* Header */
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--white);
-    border-bottom: 4px solid var(--red);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
-
-  .nav-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 24px;
-    max-width: 1140px;
-    margin: 0 auto;
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .logo-mark {
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    background: var(--red);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .logo-text {
-    line-height: 1.15;
-  }
-
-  .logo-text .name {
-    font-family: Georgia, serif;
-    font-weight: 700;
-    font-size: 1.3rem;
-    color: var(--navy);
-    letter-spacing: 0.01em;
-  }
-
-  .logo-text .tagline {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--red);
-    font-weight: 700;
-  }
-
-  nav.primary-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 28px;
-  }
-
-  nav.primary-nav a {
-    font-weight: 600;
-    font-size: 0.94rem;
-    color: var(--navy);
-    padding: 6px 2px;
-    border-bottom: 2px solid transparent;
-    transition: border-color 0.15s ease, color 0.15s ease;
-  }
-
-  nav.primary-nav a:hover {
-    color: var(--red);
-    border-color: var(--red);
-  }
-
-  .nav-cta {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 6px;
-  }
-  .hamburger span {
-    width: 26px;
-    height: 3px;
-    background: var(--navy);
-    border-radius: 2px;
-  }
-
-  /* Hero */
-  .hero {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 60%, var(--red-dark) 130%);
-    color: var(--white);
-    padding: 90px 0 80px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero::after {
-    content: "";
-    position: absolute;
-    right: -80px;
-    bottom: -80px;
-    width: 340px;
-    height: 340px;
-    border-radius: 50%;
-    background: rgba(200, 16, 46, 0.18);
-  }
-
-  .hero-inner {
-    max-width: 640px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .hero h1 {
-    color: var(--white);
-    font-size: clamp(2.1rem, 5vw, 3.1rem);
-    margin-bottom: 18px;
-  }
-
-  .hero p {
-    font-size: 1.15rem;
-    color: rgba(255,255,255,0.88);
-    margin-bottom: 30px;
-    max-width: 540px;
-  }
-
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    margin-bottom: 36px;
-  }
-
-  .hero-stats {
-    display: flex;
-    gap: 36px;
-    flex-wrap: wrap;
-  }
-
-  .hero-stats div strong {
-    display: block;
-    font-family: Georgia, serif;
-    font-size: 1.7rem;
-    color: var(--gold);
-  }
-  .hero-stats div span {
-    font-size: 0.82rem;
-    color: rgba(255,255,255,0.75);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-
-  /* About */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 56px;
-    align-items: center;
-  }
-
-  .about-copy p {
-    color: var(--text-light);
-    margin-bottom: 16px;
-    font-size: 1.02rem;
-  }
-
-  .about-copy p.lead {
-    font-size: 1.12rem;
-    color: var(--text);
-    font-weight: 500;
-  }
-
-  .about-art {
-    background: var(--cream);
-    border-radius: var(--radius);
-    padding: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Locations */
-  .locations-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 28px;
-  }
-
-  .loc-card {
-    background: var(--white);
-    border: 1px solid #eee1d0;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .loc-card-header {
-    background: var(--navy);
-    color: var(--white);
-    padding: 22px 26px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .loc-card-header .icon-wrap {
-    width: 40px;
-    height: 40px;
-    background: rgba(255,255,255,0.12);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .loc-card-header h3 { color: var(--white); font-size: 1.25rem; }
-  .loc-card-header p { font-size: 0.82rem; color: var(--gold); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-
-  .loc-card-body {
-    padding: 24px 26px 28px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  .loc-line {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .loc-line .li-icon {
-    flex-shrink: 0;
-    color: var(--red);
-    margin-top: 3px;
-  }
-
-  .loc-line strong {
-    display: block;
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-light);
-    margin-bottom: 2px;
-  }
-
-  .hours-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95rem;
-  }
-  .hours-table td {
-    padding: 3px 0;
-    color: var(--text-light);
-  }
-  .hours-table td:last-child {
-    text-align: right;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .saw-shop-note {
-    background: var(--cream);
-    border-left: 3px solid var(--red);
-    border-radius: 6px;
-    padding: 14px 16px;
-    font-size: 0.92rem;
-  }
-  .saw-shop-note a { color: var(--red); font-weight: 700; }
-
-  .loc-card-actions {
-    margin-top: auto;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .loc-card-actions .btn { flex: 1; justify-content: center; font-size: 0.88rem; padding: 11px 16px; }
-
-  /* Departments */
-  .dept-section { background: var(--cream); }
-
-  .dept-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 22px;
-  }
-
-  .dept-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    padding: 26px 20px;
-    text-align: center;
-    box-shadow: var(--shadow);
-    transition: transform 0.15s ease;
-  }
-  .dept-card:hover { transform: translateY(-3px); }
-
-  .dept-icon {
-    width: 56px;
-    height: 56px;
-    margin: 0 auto 14px;
-    border-radius: 50%;
-    background: var(--navy);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .dept-card h4 {
-    font-size: 0.98rem;
-    color: var(--navy);
-    font-weight: 700;
-  }
-
-  /* Saw Shop */
-  .saw-shop-section {
-    background: var(--navy);
-    color: var(--white);
-  }
-
-  .saw-shop-flex {
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 50px;
-    align-items: center;
-  }
-
-  .saw-shop-section .eyebrow { color: var(--gold); }
-  .saw-shop-section h2 { color: var(--white); }
-  .saw-shop-section p { color: rgba(255,255,255,0.82); margin-bottom: 18px; }
-
-  .brand-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 22px 0 28px;
-  }
-
-  .brand-chip {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.25);
-    padding: 8px 16px;
-    border-radius: 999px;
-    font-size: 0.88rem;
-    font-weight: 600;
-  }
-
-  .service-list {
-    list-style: none;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 20px;
-    margin-bottom: 8px;
-  }
-  .service-list li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.95rem;
-    color: rgba(255,255,255,0.9);
-  }
-  .service-list li::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--gold);
-    flex-shrink: 0;
-  }
-
-  .saw-shop-card {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: var(--radius);
-    padding: 32px;
-  }
-  .saw-shop-card .icon-circle {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: var(--red);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 18px;
-  }
-  .saw-shop-card h3 { color: var(--white); margin-bottom: 6px; }
-  .saw-shop-card .addr { color: rgba(255,255,255,0.75); font-size: 0.92rem; margin-bottom: 20px; }
-
-  /* Community / trust */
-  .trust-section .container {
-    max-width: 780px;
-    text-align: center;
-  }
-  .trust-section p {
-    font-size: 1.15rem;
-    color: var(--text-light);
-    font-style: italic;
-    line-height: 1.7;
-  }
-  .trust-section .eyebrow { text-align: center; }
-  .trust-section h2 { text-align: center; }
-
-  /* Contact / footer CTA */
-  .cta-band {
-    background: var(--red);
-    color: var(--white);
-    padding: 56px 0;
-    text-align: center;
-  }
-  .cta-band h2 { color: var(--white); margin-bottom: 10px; }
-  .cta-band p { color: rgba(255,255,255,0.9); margin-bottom: 26px; font-size: 1.05rem; }
-  .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-  .cta-band .btn-outline { border-color: var(--white); }
-
-  footer {
-    background: #14212c;
-    color: rgba(255,255,255,0.72);
-    padding: 56px 0 28px;
-  }
-
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr 1fr;
-    gap: 36px;
-    margin-bottom: 40px;
-  }
-
-  .footer-grid h4 {
-    color: var(--white);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 16px;
-  }
-
-  .footer-grid ul { list-style: none; }
-  .footer-grid li { margin-bottom: 9px; font-size: 0.92rem; }
-  .footer-grid a:hover { color: var(--white); }
-
-  .footer-brand .logo-text .name { color: var(--white); }
-  .footer-brand p { font-size: 0.88rem; margin: 14px 0 18px; max-width: 280px; color: rgba(255,255,255,0.6); }
-
-  .social-row { display: flex; gap: 10px; }
-  .social-row a {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.08);
-    display: flex; align-items: center; justify-content: center;
-    border: 1px solid rgba(255,255,255,0.15);
-    transition: background 0.15s ease;
-  }
-  .social-row a:hover { background: var(--red); }
-
-  .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.1);
-    padding-top: 22px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    font-size: 0.82rem;
-    color: rgba(255,255,255,0.5);
-  }
-  .footer-bottom a { color: rgba(255,255,255,0.7); }
-
-  /* Mobile */
-  @media (max-width: 900px) {
-    .about-grid { grid-template-columns: 1fr; gap: 32px; }
-    .about-art { order: -1; }
-    .locations-grid { grid-template-columns: 1fr; }
-    .dept-grid { grid-template-columns: repeat(2, 1fr); }
-    .saw-shop-flex { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
-  }
-
-  @media (max-width: 720px) {
-    nav.primary-nav { display: none; }
-    .hamburger { display: flex; }
-    .nav-cta .btn span.btn-label { display: none; }
-    body.nav-open nav.primary-nav {
-      display: flex;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--white);
-      flex-direction: column;
-      padding: 18px 24px 26px;
-      box-shadow: var(--shadow);
-      border-bottom: 4px solid var(--red);
-    }
-    body.nav-open nav.primary-nav ul {
-      flex-direction: column;
-      gap: 4px;
-    }
-    body.nav-open nav.primary-nav a {
-      display: block;
-      padding: 12px 4px;
-      border-bottom: 1px solid #f0ece2;
-    }
-    .hero { padding: 60px 0 60px; }
-    .hero-stats { gap: 24px; }
-    .section { padding: 52px 0; }
-    .dept-grid { grid-template-columns: 1fr 1fr; }
-    .footer-grid { grid-template-columns: 1fr; gap: 26px; }
-  }
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Miller Hardware | Harrison and Yellville, Arkansas</title>
+<meta name="description" content="Family-owned True Value hardware store, lumberyard and saw shop in Harrison and Yellville, Arkansas. Since 1931.">
+<meta name="theme-color" content="#1A1716">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preload" href="fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/inter-tight.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="site.css">
 </head>
 <body>
-
-<header>
-  <div class="nav-wrap">
-    <a href="#top" class="logo">
-      <div class="logo-mark">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-        </svg>
-      </div>
-      <div class="logo-text">
-        <div class="name">Miller Hardware</div>
-        <div class="tagline">True Value &middot; Est. 1931</div>
-      </div>
-    </a>
-
-    <nav class="primary-nav">
-      <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#locations">Locations</a></li>
-        <li><a href="#departments">Departments</a></li>
-        <li><a href="#saw-shop">Saw Shop</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-
-    <div class="nav-cta">
-      <a class="btn btn-primary" href="tel:+18707413493"><span class="btn-label">Call Harrison</span></a>
-      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
+<a class="skip" href="#main">Skip to content</a>
+<div class="announce" id="announce" role="status" hidden></div>
+<div class="topbar"><div class="wrap topbar-in"><span>Family owned since 1931 &middot; True Value hardware and lumber</span><span class="phones"><span>Harrison <a href="tel:+18707413493">870-741-3493</a></span><span>Yellville <a href="tel:+18704494255">870-449-4255</a></span></span></div></div>
+<header class="hdr on-dark">
+  <div class="wrap hdr-in">
+    <a class="logo" href="index.html" aria-label="Miller Hardware Company, home"><img src="img/logo-white.png" width="396" height="214" alt="Miller Hardware Company, Harrison and Yellville"></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><span></span></button>
+    <nav class="nav" id="site-nav" aria-label="Main"><ul><li><a href="index.html#departments" aria-current="page">Departments</a></li><li><a href="saw-shop.html#used">Used equipment</a></li><li><a href="special-orders.html">Special orders</a></li><li><a href="services.html">Services</a></li><li><a href="locations.html">Stores</a></li><li><a href="about.html">About</a></li><li><a class="nav-cta" href="contact.html">Contact us</a></li></ul></nav>
   </div>
 </header>
-
-<main id="top">
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container">
-      <div class="hero-inner">
-        <h1>Family Owned. Community Trusted. Since 1931.</h1>
-        <p>Miller Hardware has proudly served Marion &amp; Boone County for five generations — full-service hardware and lumber in Harrison and Yellville, Arkansas.</p>
-        <div class="hero-actions">
-          <a href="#locations" class="btn btn-primary">Find Your Store</a>
-          <a href="#about" class="btn btn-outline">Our Story</a>
-        </div>
-        <div class="hero-stats">
-          <div><strong>1931</strong><span>Founded in Harrison</span></div>
-          <div><strong>5th</strong><span>Generation of Millers</span></div>
-          <div><strong>2</strong><span>Locations to Serve You</span></div>
-        </div>
+<main id="main">
+<section class="hero on-dark">
+  <div class="hero-bg"><img src="img/storefront-1800.jpg" srcset="img/storefront-900.jpg 900w, img/storefront-1800.jpg 1800w" sizes="100vw" width="1800" height="1015" alt="The front of Miller Hardware and Lumber in Yellville, with the black bear greeter at the door" loading="eager" fetchpriority="high"></div>
+  <div class="wrap hero-in">
+    <div class="seal" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><path id="sealpath" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs><circle cx="100" cy="100" r="97" fill="none" stroke="currentColor" stroke-opacity=".35"/><circle cx="100" cy="100" r="60" fill="none" stroke="currentColor" stroke-opacity=".35"/><text font-family="Inter Tight, sans-serif" font-size="15" font-weight="600" letter-spacing="5.2" fill="currentColor"><textPath href="#sealpath">FAMILY OWNED &#183; HARRISON &#183; YELLVILLE &#183;</textPath></text></svg><b><small>Since</small>1931</b></div>
+    <div class="hero-copy">
+      <p class="eyebrow">Harrison &middot; Yellville &middot; Since 1931</p>
+      <h1>Hardware, lumber and a saw shop that knows <em>your name.</em></h1>
+      <p class="lead">A family-owned True Value store for nearly a century. If it is not on our shelf, it is in the catalog, and we will order it for you.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#departments">Browse departments <span class="arr" aria-hidden="true">&rarr;</span></a>
+        <a class="btn btn-ghost" href="saw-shop.html#used">See used equipment</a>
       </div>
     </div>
-  </section>
+    <ul class="hero-facts" aria-label="At a glance">
+      <li><b>Since 1931</b><span>Family owned and run</span></li>
+      <li><b>Two stores</b><span>Harrison and Yellville</span></li>
+      <li><b>True Value</b><span>Special orders from the catalog</span></li>
+      <li><b>We deliver</b><span>Ask at either counter</span></li>
+    </ul>
+  </div>
+</section>
 
-  <!-- ABOUT -->
-  <section class="section" id="about">
-    <div class="container about-grid">
-      <div class="about-copy">
-        <span class="eyebrow">Our Story</span>
-        <h2>Five Generations of Millers</h2>
-        <p class="lead">Miller Hardware opened its doors in Harrison back in 1931, and five generations of Millers have kept them open ever since.</p>
-        <p>We're a small-town hardware and lumberyard at heart — the kind of place where we know your name when you walk through the door, and often your family too. Whether it's a box of nails or a full building project, we're set up to deliver the big jobs just as well as the small ones.</p>
-        <p>Every day we get to meet new neighbors as Marion and Boone County keep growing, and we're growing right along with them. We'd be honored to earn the business of every family, farm, and contractor in the area — one relationship at a time.</p>
-      </div>
-      <div class="about-art">
-        <svg width="220" height="220" viewBox="0 0 220 220" fill="none">
-          <circle cx="110" cy="110" r="108" fill="#fff" stroke="#eee1d0" stroke-width="2"/>
-          <rect x="55" y="95" width="110" height="70" rx="4" fill="#1c2b39"/>
-          <polygon points="48,98 110,50 172,98" fill="#c8102e"/>
-          <rect x="98" y="128" width="24" height="37" fill="#f8f4ea"/>
-          <rect x="68" y="112" width="20" height="20" fill="#f8f4ea"/>
-          <rect x="132" y="112" width="20" height="20" fill="#f8f4ea"/>
-          <rect x="90" y="46" width="8" height="16" fill="#9c0d24"/>
-        </svg>
-      </div>
+<section class="sec sec-alt" id="specials" hidden>
+  <div class="wrap">
+    <div class="sec-head reveal"><div><p class="eyebrow">This week at Miller</p><h2>Store <em>specials</em></h2></div><p class="intro">Deals at our counters right now. Quantities are limited, so call ahead if you're driving over for one.</p></div>
+    <div class="specials-grid" id="specials-grid"></div>
+  </div>
+</section>
+
+<section class="sec" id="departments">
+  <div class="wrap">
+    <div class="sec-head reveal"><div><p class="eyebrow">What we carry</p><h2>Five departments, <em>one counter</em> that can find it.</h2></div><p class="intro">A hardware store and lumberyard with a full saw shop for outdoor power equipment. Pick a department to see what we stock and the brands on the shelf.</p></div>
+    <div class="depts"><article class="dept reveal">
+  <div class="dept-photo"><img src="img/saw-shop-sign-1600.jpg" srcset="img/saw-shop-sign-800.jpg 800w, img/saw-shop-sign-1600.jpg 1600w" sizes="(max-width:880px) 100vw, 58vw" width="1600" height="1200" alt="The Miller Saw Shop building with its big orange Stihl sign" style="object-position:30% 50%" loading="lazy" decoding="async"></div>
+  <div class="dept-body">
+    <h3><a href="saw-shop.html">Saw shop and outdoor power</a></h3>
+    <p>New and used equipment, parts and repair for chainsaws, mowers and everything with a pull cord.</p>
+    <span class="tag" data-tag-brands="saw" data-n="4">Stihl &middot; Echo &middot; Ferris &middot; Scag</span>
+  </div>
+</article><article class="dept reveal">
+  <div class="dept-photo"><img src="img/yard-day-1600.jpg" srcset="img/yard-day-800.jpg 800w, img/yard-day-1600.jpg 1600w" sizes="(max-width:880px) 100vw, 42vw" width="1600" height="757" alt="The Harrison lumberyard, with covered racks of lumber and stacks of PVC pipe" style="object-position:50% 60%" loading="lazy" decoding="async"></div>
+  <div class="dept-body">
+    <h3><a href="lumber.html">Lumber and building materials</a></h3>
+    <p>Framing and treated lumber, sheet goods, roofing and the supplies that go with them.</p>
+    <span class="tag" data-tag-brands="lumber" data-n="4">YellaWood &middot; Boise Cascade &middot; Viwintech</span>
+  </div>
+</article><article class="dept reveal">
+  <div class="dept-photo"><img src="img/easycare-everyday-1600.jpg" srcset="img/easycare-everyday-800.jpg 800w, img/easycare-everyday-1600.jpg 1600w" sizes="(max-width:880px) 100vw, 42vw" width="1600" height="1200" alt="Cans of EasyCare Everyday exterior paint on the shelf" style="object-position:50% 40%" loading="lazy" decoding="async"></div>
+  <div class="dept-body">
+    <h3><a href="paint.html">Paint and tinting</a></h3>
+    <p>EasyCare paint and TWP stain, tinted in the store.</p>
+    <span class="tag" data-tag-brands="paint" data-n="4">EasyCare Ultra Premium &middot; EasyCare Everyday &middot; TWP</span>
+  </div>
+</article><article class="dept reveal">
+  <div class="dept-photo"><img src="img/drainage-pipe-1500.jpg" srcset="img/drainage-pipe-800.jpg 800w, img/drainage-pipe-1500.jpg 1500w" sizes="(max-width:880px) 100vw, 42vw" width="1500" height="900" alt="Stacked black corrugated drainage pipe" style="object-position:50% 55%" loading="lazy" decoding="async"></div>
+  <div class="dept-body">
+    <h3><a href="plumbing.html">Plumbing</a></h3>
+    <p>Fittings, pipe, fixtures, septic and drainage.</p>
+    <span class="tag" data-tag-brands="plumbing" data-n="4">Kissler &middot; Prinsco</span>
+  </div>
+</article><article class="dept reveal">
+  <div class="dept-photo"><img src="img/diablo-1600.jpg" srcset="img/diablo-800.jpg 800w, img/diablo-1600.jpg 1600w" sizes="(max-width:880px) 100vw, 42vw" width="1600" height="1200" alt="Diablo SDS rebar-cutting hammer bits on a pegboard" style="object-position:50% 40%" loading="lazy" decoding="async"></div>
+  <div class="dept-body">
+    <h3><a href="hardware-tools.html">Hardware and tools</a></h3>
+    <p>Fasteners, tools, electrical and farm supplies.</p>
+    <span class="tag" data-tag-brands="hardware" data-n="4">Hillman &middot; Forney &middot; Bowman &middot; Magid</span>
+  </div>
+</article><article class="dept dept-hot reveal">
+  <div class="dept-body">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4l14 7v18l-14 7-14-7V11z"/><path d="M6 11l14 7 14-7M20 18v18"/></svg>
+    <h3><a href="special-orders.html">Special orders</a></h3>
+    <p>Anything in the True Value catalog, ready for pickup at either store.</p>
+    <span class="dept-go">How it works <span class="arr" aria-hidden="true">&rarr;</span></span>
+  </div>
+</article></div>
+  </div>
+</section>
+
+<section class="sec sec-alt" id="brands">
+  <div class="wrap">
+    <div class="sec-head reveal"><div><p class="eyebrow">On our shelves</p><h2>Brands we stand behind</h2></div><p class="intro">A sample of the names you will find in the store, the yard and the saw shop. Each department page has its own list.</p></div>
+    <div class="brandgrid  reveal" data-brands="all"><div class="brand-cell"><b>Stihl</b><span>Call for price</span></div><div class="brand-cell"><b>Echo</b><span>Call for price</span></div><div class="brand-cell"><b>Ferris</b><span>Call for price</span></div><div class="brand-cell"><b>Scag</b><span>Call for price</span></div><div class="brand-cell"><b>Exmark</b><span>Call for price</span></div><div class="brand-cell"><b>Senix</b><span>Call for price</span></div><div class="brand-cell"><b>EasyCare Ultra Premium</b><span>Paint and primer</span></div><div class="brand-cell"><b>EasyCare Everyday</b><span>Paint and primer</span></div><div class="brand-cell"><b>TWP</b><span>Total Wood Protectant</span></div><div class="brand-cell"><b>YellaWood</b><span>Treated lumber</span></div><div class="brand-cell"><b>Boise Cascade</b><span>Building materials</span></div><div class="brand-cell"><b>Viwintech</b><span>Doors and windows</span></div><div class="brand-cell"><b>Kissler</b><span>Plumbing supplies</span></div><div class="brand-cell"><b>Prinsco</b><span>Septic and drainage</span></div><div class="brand-cell"><b>Hillman</b><span>Fasteners and hardware</span></div><div class="brand-cell"><b>Forney</b><span>Welding and tools</span></div><div class="brand-cell"><b>Bowman</b><span>Tool handles</span></div><div class="brand-cell"><b>Magid</b><span>Work gloves</span></div><div class="brand-cell"><b>Golden Stag</b><span>Work gloves</span></div><div class="brand-cell"><b>Southern Wire</b><span>Farm and ranch</span></div><div class="brand-cell"><b>K&amp;K Vet Supply</b><span>Animal health</span></div><div class="brand-cell"><b>Interstate Batteries</b><span>Automotive</span></div></div>
+  </div>
+</section>
+
+<section class="sec sec-dark on-dark" id="people">
+  <div class="wrap story">
+    <div class="story-text reveal">
+      <p class="eyebrow">Our people</p>
+      <h2>Ninety-five years of <em>knowing the answer.</em></h2>
+      <p>Miller Hardware has been owned by the Miller family since 1931. The people behind the counter tend to stay, too. When Gary Holt retired, he had been with us for 52 years.</p>
+      <p>That is why a question here gets a real answer, from someone who has probably done the job themselves.</p>
+      <p><a class="textlink" href="about.html">Read our story</a></p>
     </div>
-  </section>
+    <div class="collage reveal">
+  <figure class="c1"><div class="ph"><img src="img/retirement-975.jpg" srcset="img/retirement-600.jpg 600w, img/retirement-975.jpg 975w" sizes="(max-width:880px) 100vw, 55vw" width="975" height="743" alt="The Miller Hardware crew celebrating Gary Holt&#x27;s retirement after 52 years" loading="lazy" decoding="async"></div>
+    <figcaption>Gary Holt's retirement party, after 52 years with us</figcaption></figure>
+  <figure><div class="ph"><img src="img/golf-cart-993.jpg" srcset="img/golf-cart-600.jpg 600w, img/golf-cart-993.jpg 993w" sizes="(max-width:880px) 50vw, 27vw" width="993" height="661" alt="A longtime Miller Hardware employee driving a golf cart across the yard" loading="lazy" decoding="async"></div>
+    <figcaption>Making the rounds in the yard</figcaption></figure>
+  <figure><div class="ph"><img src="img/history-1976-960.jpg" srcset="img/history-1976-960.jpg 960w" sizes="(max-width:880px) 50vw, 27vw" width="960" height="720" alt="Framed 1976 photograph of a Miller Hardware Company truck and crew" loading="lazy" decoding="async"></div>
+    <figcaption>First Gaucho shipment, April 1976</figcaption></figure>
+</div>
+  </div>
+</section>
 
-  <!-- LOCATIONS -->
-  <section class="section" id="locations" style="background:#fff;">
-    <div class="container">
-      <div class="section-intro">
-        <span class="eyebrow">Visit Us</span>
-        <h2>Two Locations, One Family</h2>
-        <p>Both stores are full-service hardware and lumberyards — plumbing and drainage, doors and windows, paint, farm supplies, and more. Stop in, or give us a call.</p>
-      </div>
+<section class="sec">
+  <div class="wrap">
+    <figure class="quote reveal">
+      <blockquote>Welcome to the friendliest place in Yellville.</blockquote>
+      <figcaption>The sign over our front door</figcaption>
+    </figure>
+  </div>
+</section>
 
-      <div class="locations-grid">
-
-        <!-- Harrison -->
-        <div class="loc-card">
-          <div class="loc-card-header">
-            <div class="icon-wrap">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
-            </div>
-            <div>
-              <h3>Harrison</h3>
-              <p>Main Store</p>
-            </div>
-          </div>
-          <div class="loc-card-body">
-            <div class="loc-line">
-              <span class="li-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
-              <div>
-                <strong>Address</strong>
-                2 Necessity Ave, Harrison, AR
-              </div>
-            </div>
-            <div class="loc-line">
-              <span class="li-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
-              <div>
-                <strong>Phone</strong>
-                <a href="tel:+18707413493">(870) 741-3493</a>
-              </div>
-            </div>
-            <div class="loc-line" style="width:100%;">
-              <span class="li-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-              <div style="width:100%;">
-                <strong>Hours</strong>
-                <table class="hours-table">
-                  <tr><td>Mon&ndash;Fri</td><td>7:30 AM&ndash;5:30 PM</td></tr>
-                  <tr><td>Saturday</td><td>8:00 AM&ndash;12:00 PM</td></tr>
-                  <tr><td>Sunday</td><td>Closed</td></tr>
-                </table>
-              </div>
-            </div>
-            <div class="loc-card-actions">
-              <a class="btn btn-navy" href="https://www.google.com/maps/search/?api=1&query=2+Necessity+Ave+Harrison+AR" target="_blank" rel="noopener">Get Directions</a>
-              <a class="btn btn-primary" href="tel:+18707413493">Call Store</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Yellville -->
-        <div class="loc-card">
-          <div class="loc-card-header">
-            <div class="icon-wrap">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
-            </div>
-            <div>
-              <h3>Yellville</h3>
-              <p>Main Store</p>
-            </div>
-          </div>
-          <div class="loc-card-body">
-            <div class="loc-line">
-              <span class="li-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
-              <div>
-                <strong>Address</strong>
-                1609 Highway 62 W, Yellville, AR
-              </div>
-            </div>
-            <div class="loc-line">
-              <span class="li-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
-              <div>
-                <strong>Phone</strong>
-                <a href="tel:+18704494255">(870) 449-4255</a>
-              </div>
-            </div>
-            <div class="loc-line" style="width:100%;">
-              <span class="li-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-              <div style="width:100%;">
-                <strong>Hours</strong>
-                <table class="hours-table">
-                  <tr><td>Mon&ndash;Fri</td><td>7:30 AM&ndash;5:00 PM</td></tr>
-                  <tr><td>Saturday</td><td>8:00 AM&ndash;12:00 PM</td></tr>
-                  <tr><td>Sunday</td><td>Closed</td></tr>
-                </table>
-              </div>
-            </div>
-            <div class="saw-shop-note">
-              Also home to our <a href="#saw-shop">Saw Shop &amp; Small Engine Shop &rarr;</a> &mdash; call (870) 449-5234
-            </div>
-            <div class="loc-card-actions">
-              <a class="btn btn-navy" href="https://www.google.com/maps/search/?api=1&query=1609+Highway+62+W+Yellville+AR" target="_blank" rel="noopener">Get Directions</a>
-              <a class="btn btn-primary" href="tel:+18704494255">Call Store</a>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- DEPARTMENTS -->
-  <section class="section dept-section" id="departments">
-    <div class="container">
-      <div class="section-intro">
-        <span class="eyebrow">What We Carry</span>
-        <h2>Full-Service Hardware &amp; Lumber</h2>
-        <p>Both Harrison and Yellville are stocked for everything from a quick repair to a full building project.</p>
-      </div>
-      <div class="dept-grid">
-
-        <div class="dept-card">
-          <div class="dept-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
-          <h4>Lumber &amp; Building Materials</h4>
-        </div>
-
-        <div class="dept-card">
-          <div class="dept-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L14 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 2 6a2 2 0 0 1 2-2z" opacity="0"/><path d="M6 3v6a3 3 0 0 0 3 3v9M15 3v6a3 3 0 0 1-3 3"/><path d="M18 3v18"/></svg></div>
-          <h4>Plumbing, Pipe &amp; Drainage</h4>
-        </div>
-
-        <div class="dept-card">
-          <div class="dept-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18 4.5 4.5 0 0 0 4.5-4.5c0-1.5-1-2-1-3.5a2.5 2.5 0 0 1 2.5-2.5"/></svg></div>
-          <h4>Culverts &amp; Septic</h4>
-        </div>
-
-        <div class="dept-card">
-          <div class="dept-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="1"/><circle cx="15" cy="12" r="1" fill="#fff"/></svg></div>
-          <h4>Doors, Windows &amp; Trim</h4>
-        </div>
-
-        <div class="dept-card">
-          <div class="dept-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.37 2.63L14 7l-1.5-1.5L17 1l1.37 1.63z"/><path d="M9 11l6-6 4 4-6 6H9v-4z"/><path d="M7 14l-4 4a2 2 0 0 0 3 3l4-4"/></svg></div>
-          <h4>Full Paint Department</h4>
-        </div>
-
-        <div class="dept-card">
-          <div class="dept-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22s3-8 10-8 10 8 10 8"/><path d="M12 14V5"/><path d="M8 8l4-4 4 4"/></svg></div>
-          <h4>Farm Supplies</h4>
-        </div>
-
-        <div class="dept-card">
-          <div class="dept-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V6l4-4 4 4v16M12 22V10l4-4 4 4v12"/><path d="M4 14h4M12 16h4"/></svg></div>
-          <h4>Gates &amp; Fencing</h4>
-        </div>
-
-        <div class="dept-card">
-          <div class="dept-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
-          <h4>Hardware Essentials</h4>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- SAW SHOP -->
-  <section class="section saw-shop-section" id="saw-shop">
-    <div class="container saw-shop-flex">
-      <div>
-        <span class="eyebrow">Yellville Location</span>
-        <h2>Saw Shop &amp; Small Engine Shop</h2>
-        <p>Sales and service for the equipment that keeps your property running — from weekend yard work to full-time land management. Located right at our Yellville store.</p>
-
-        <ul class="service-list">
-          <li>Chainsaws</li>
-          <li>Trimmers</li>
-          <li>Generators</li>
-          <li>Lawnmowers</li>
-          <li>Riding Mowers</li>
-          <li>Zero-Turn Mowers</li>
-        </ul>
-
-        <span class="eyebrow" style="margin-top:10px;">Brands We Carry &amp; Service</span>
-        <div class="brand-chips">
-          <span class="brand-chip">Echo</span>
-          <span class="brand-chip">Ferris</span>
-          <span class="brand-chip">Scag</span>
-          <span class="brand-chip">Exmark</span>
-          <span class="brand-chip">Senix</span>
-        </div>
-      </div>
-
-      <div class="saw-shop-card">
-        <div class="icon-circle">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 0-5 5v2a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z"/><path d="M8 14l-4 8h16l-4-8"/></svg>
-        </div>
-        <h3>Saw Shop &amp; Small Engine Shop</h3>
-        <p class="addr">1609 Highway 62 W, Yellville, AR<br>(same address as Yellville Main Store)</p>
-        <div class="loc-card-actions">
-          <a class="btn btn-primary" href="tel:+18704495234">Call (870) 449-5234</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TRUST -->
-  <section class="section trust-section">
-    <div class="container">
-      <span class="eyebrow">Growing With Our Community</span>
-      <h2>Marion &amp; Boone County, We're Grateful for You</h2>
-      <p>&ldquo;We know people's names when they come through the door, and we know their families. Every day we meet new neighbors as this community grows, and we're growing right along with it. We'd love the chance to earn the business of every family, farm, and job site in Marion and Boone County.&rdquo;</p>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta-band" id="contact">
-    <div class="container">
-      <h2>Stop By, Call, or Get Directions</h2>
-      <p>Two locations, ready to help with your next project.</p>
-      <div class="cta-actions">
-        <a class="btn btn-navy" href="tel:+18707413493">Call Harrison &mdash; (870) 741-3493</a>
-        <a class="btn btn-outline" href="tel:+18704494255">Call Yellville &mdash; (870) 449-4255</a>
-      </div>
-    </div>
-  </section>
-
+<section class="cta on-dark"><div class="cta-bg"><img src="img/sunset-1600.jpg" srcset="img/sunset-800.jpg 800w, img/sunset-1600.jpg 1600w" sizes="100vw" width="1600" height="880" alt="A red sunset over the Miller Hardware yard" loading="lazy" decoding="async"></div><div class="wrap cta-in reveal"><p class="eyebrow">Two stores, one phone call</p><h2>Not sure we have it?</h2><p>Call the counter. We would rather answer a quick question than have you drive for nothing.</p><div class="actions"><a class="btn btn-primary" href="tel:+18707413493"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg> Call Harrison</a><a class="btn btn-white" href="tel:+18704494255"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg> Call Yellville</a></div></div></section>
 </main>
-
-<footer>
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="logo-text">
-          <div class="name">Miller Hardware</div>
-          <div class="tagline">True Value &middot; Est. 1931</div>
-        </div>
-        <p>Five generations of Millers, proudly serving Marion and Boone County, Arkansas.</p>
-        <div class="social-row">
-          <a href="#" aria-label="Facebook (coming soon)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-          <a href="#" aria-label="Instagram (coming soon)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="#fff"/></svg>
-          </a>
-        </div>
-      </div>
-
-      <div>
-        <h4>Harrison</h4>
-        <ul>
-          <li>2 Necessity Ave, Harrison, AR</li>
-          <li><a href="tel:+18707413493">(870) 741-3493</a></li>
-          <li>Mon&ndash;Fri 7:30&ndash;5:30, Sat 8&ndash;12</li>
-        </ul>
-      </div>
-
-      <div>
-        <h4>Yellville</h4>
-        <ul>
-          <li>1609 Highway 62 W, Yellville, AR</li>
-          <li><a href="tel:+18704494255">(870) 449-4255</a></li>
-          <li>Mon&ndash;Fri 7:30&ndash;5:00, Sat 8&ndash;12</li>
-          <li>Saw Shop: <a href="tel:+18704495234">(870) 449-5234</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h4>Links</h4>
-        <ul>
-          <li><a href="https://www.truevalue.com/" target="_blank" rel="noopener">True Value</a></li>
-          <li><a href="https://rewards.truevalue.com/" target="_blank" rel="noopener">My True Value Rewards</a></li>
-          <li><a href="#departments">Departments</a></li>
-          <li><a href="#saw-shop">Saw Shop</a></li>
-        </ul>
-      </div>
+<footer class="foot on-dark">
+  <div class="wrap foot-top">
+    <div>
+      <img src="img/logo-white.png" width="396" height="214" alt="Miller Hardware Company" loading="lazy">
+      <p class="foot-tag">Hardware, lumber and a saw shop, <em>family owned</em> since 1931.</p>
     </div>
-
-    <div class="footer-bottom">
-      <span>&copy; <span id="year"></span> Miller Hardware. Independently owned &amp; operated.</span>
-      <span>Proud member of the True Value family of stores.</span>
+    <div>
+      <h4>Departments</h4>
+      <ul><li><a href="saw-shop.html">Saw shop</a></li><li><a href="lumber.html">Lumber</a></li><li><a href="paint.html">Paint</a></li><li><a href="plumbing.html">Plumbing</a></li><li><a href="hardware-tools.html">Hardware and tools</a></li><li><a href="saw-shop.html#used">Used equipment</a></li><li><a href="special-orders.html">Special orders</a></li></ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul><li><a href="about.html">About</a></li><li><a href="services.html">Services</a></li><li><a href="careers.html">Careers</a></li><li><a href="contact.html">Contact us</a></li><li><a href="locations.html">Stores and hours</a></li></ul>
+    </div>
+    <div>
+      <h4>Visit</h4>
+      <ul>
+        <li><strong style="color:#fff">Harrison</strong></li>
+        <li><span data-store="harrison" data-f="street">2 E Necessity Ave</span><br><span data-store="harrison" data-f="csz">Harrison, AR 72601</span></li>
+        <li><a class="foot-phone" href="tel:+18707413493">870-741-3493</a></li>
+        <li style="margin-top:16px"><strong style="color:#fff">Yellville</strong></li>
+        <li><span data-store="yellville" data-f="street">1609 Hwy 62 W</span><br><span data-store="yellville" data-f="csz">Yellville, AR 72687</span></li>
+        <li><a class="foot-phone" href="tel:+18704494255">870-449-4255</a></li>
+        <li style="margin-top:16px"><a href="locations.html">Hours and directions &rarr;</a></li>
+      </ul>
     </div>
   </div>
+  <div class="foot-base"><div class="wrap"><span>&copy; 2026 Miller Hardware Company</span><span>Harrison and Yellville, Arkansas &middot; True Value</span></div></div>
 </footer>
-
-<script>
-  document.getElementById('year').textContent = new Date().getFullYear();
-
-  var hamburger = document.getElementById('hamburger');
-  hamburger.addEventListener('click', function () {
-    document.body.classList.toggle('nav-open');
-  });
-
-  document.querySelectorAll('nav.primary-nav a').forEach(function (link) {
-    link.addEventListener('click', function () {
-      document.body.classList.remove('nav-open');
-    });
-  });
-</script>
-
+<nav class="callbar" aria-label="Call a store"><a href="tel:+18707413493">Call Harrison<small>870-741-3493</small></a><a href="tel:+18704494255">Call Yellville<small>870-449-4255</small></a></nav>
+<script src="site-data.js"></script>
+<script src="firebase-config.js"></script>
+<script src="site.js" defer></script>
 </body>
 </html>
