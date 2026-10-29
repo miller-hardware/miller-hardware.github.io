@@ -496,3 +496,9 @@ a:focus-visible,button:focus-visible,.btn:focus-visible,input:focus-visible,sele
   .foot-top{grid-template-columns:minmax(0,1fr)}
 }
 [hidden]{display:none !important}
+
+.track-box{margin-top:40px;max-width:760px;padding:28px;border:1px solid var(--rule-2);border-radius:4px;background:var(--panel)}
+.track-box h3{margin:0 0 6px}
+.track-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:0 16px;align-items:end;margin-top:14px}
+.track-row .btn{margin-bottom:18px}
+@media (max-width:640px){.track-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.track-row .btn{grid-column:1/-1}}

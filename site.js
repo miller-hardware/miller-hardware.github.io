@@ -63,6 +63,7 @@
       if (!msg) { say("Please add a message.", "err"); document.getElementById("c-msg").focus(); return; }
       var t = tSel.value;
       if (t === "saw-shop" && !phone) { say("Please leave a phone number so the saw shop can call you.", "err"); document.getElementById("c-phone").focus(); return; }
+      var toShop = t === "saw-shop" || ((t === "parts" || t === "trade") && phone);
       var problem = msg;
       if (!document.getElementById("c-equip").hidden) {
         var eq = [["Equipment", (t === "saw-shop" || t === "trade") ? v("c-etype") : ""], ["Brand", v("c-brand")], ["Model", v("c-model")],
@@ -79,14 +80,16 @@
         form.reset(); document.getElementById("c-ref-line").hidden = true; syncEquip();
         say("Thanks, " + name.split(" ")[0] + ". Your message was sent. We'll call or email you back.", "ok"); btnSend.disabled = false;
       };
-      if (t === "saw-shop") {
-        // Service requests go straight into the Saw Shop app's Web Requests list.
+      if (toShop) {
+        // Service, parts and trade-in requests go straight into the Saw Shop app's Web Requests list.
         var storeName = sSel.value === "yellville" ? "Yellville" : "Harrison";
         sawShopDb().then(function (sdb) {
           return sdb.ref("web_requests").push({
             name: name.slice(0, 80), phone: phone.slice(0, 30), email: email.slice(0, 120), store: storeName,
-            equipType: v("c-etype"), brand: v("c-brand").slice(0, 40), model: v("c-model").slice(0, 40), serial: v("c-serial").slice(0, 40),
-            problem: problem.slice(0, 2000), dropoff: v("c-drop"), status: "new", createdAt: firebase.database.ServerValue.TIMESTAMP
+            equipType: (t === "saw-shop" || t === "trade") ? v("c-etype") : "", brand: v("c-brand").slice(0, 40), model: v("c-model").slice(0, 40), serial: v("c-serial").slice(0, 40),
+            problem: problem.slice(0, 2000), status: "new", createdAt: firebase.database.ServerValue.TIMESTAMP,
+            kind: t === "saw-shop" ? "service" : t, dropoff: t === "saw-shop" ? v("c-drop") : "",
+            part: t === "parts" ? v("c-part").slice(0, 200) : "", year: t === "trade" ? v("c-year").slice(0, 4) : "", hours: t === "trade" ? v("c-hours").slice(0, 8) : ""
           });
         }).then(done).catch(function () { sendToInbox(); });
         return;
@@ -120,6 +123,21 @@
     _sawDb.catch(function () { _sawDb = null; });
     return _sawDb;
   }
+
+  // ---------- repair status lookup (saw shop page) ----------
+  var tf = document.getElementById("track-form");
+  if (tf) tf.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var wo = document.getElementById("t-wo").value.replace(/\D/g, ""), ph = document.getElementById("t-ph").value.replace(/\D/g, "");
+    var m = document.getElementById("t-msg"), say = function (t, k) { m.textContent = t; m.className = "form-msg" + (k ? " " + k : ""); };
+    if (!wo || ph.length !== 4) { say("Enter your work order number and the last 4 digits of your phone.", "err"); return; }
+    say("Looking it up...");
+    fetch(SAWSHOP_FB.databaseURL + "/public_lookup/" + wo + "-" + ph + ".json").then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (id) {
+        if (typeof id === "string" && /^[A-Za-z0-9_-]{4,40}$/.test(id)) { location.href = "sawshop/?track=" + encodeURIComponent(id); return; }
+        say("We couldn't find that repair. Check the number on your ticket, or call Harrison 870-741-3493 or Yellville 870-449-4255.", "err");
+      }).catch(function () { say("Sorry, that didn't work. Please call Harrison 870-741-3493 or Yellville 870-449-4255.", "err"); });
+  });
 
   // ---------- live content ----------
   var cfg = window.MH_FIREBASE;
