@@ -91,6 +91,14 @@ window.MH_DEFAULTS = {
    {
     "name": "Gaucho",
     "label": "Barbed wire"
+   },
+   {
+    "name": "Oklahoma Steel & Wire",
+    "label": "Fence and wire"
+   },
+   {
+    "name": "Stull Feeders",
+    "label": "Feeders"
    }
   ],
   "saw": [

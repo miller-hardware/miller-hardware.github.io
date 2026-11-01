@@ -78,7 +78,9 @@ service cloud.firestore {
         && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 60
         && request.resource.data.email is string && request.resource.data.email.size() <= 120
         && request.resource.data.store in ['harrison', 'yellville', 'both'];
-      allow update: if false;
+      allow update: if request.auth != null && request.auth.uid == uid && isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['store'])
+        && request.resource.data.store in ['harrison', 'yellville', 'both'];
       allow delete: if isAdmin() && request.auth.uid != uid;
     }
   }

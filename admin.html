@@ -55,6 +55,7 @@ body{padding-bottom:0}
 .list .info b{display:block}
 .list .info span{color:var(--muted);font-size:.92rem}
 .list .acts{display:flex;gap:8px;flex-wrap:wrap}
+.linkbtn{background:none;border:0;padding:0;color:var(--red);font:inherit;text-decoration:underline;cursor:pointer}
 .badge{display:inline-block;font:500 11.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;background:var(--rule);color:var(--ink);margin-left:6px;vertical-align:middle}
 .badge.sold{background:#7A0A1D;color:#fff}
 .badge.new{background:var(--red);color:#fff}
@@ -115,7 +116,9 @@ body{padding-bottom:0}
   </section>
 
   <section id="s-app" class="hidden">
-    <p class="note">Changes save to the live site as soon as you press Save. Each store's phone numbers are not editable here.</p>
+    <div class="box hidden" id="store-ask"><h2>Which store do you work at?</h2><p class="note">Asked once. It sets your store on new equipment, specials and jobs, and shows your store's messages first. You can change it any time.</p>
+      <div class="btns"><button class="btn btn-primary" type="button" data-mystore="harrison">Harrison</button><button class="btn btn-primary" type="button" data-mystore="yellville">Yellville</button><button class="btn btn-line" type="button" data-mystore="both">Both stores</button></div><p class="msg" id="store-ask-msg" role="status"></p></div>
+    <p class="note">Changes save to the live site as soon as you press Save. Each store's phone numbers are not editable here. <span id="mystore-line"></span></p>
     <div class="tabs" role="tablist" aria-label="Admin sections">
       <button role="tab" id="t-inbox" aria-selected="true" aria-controls="p-inbox">Inbox</button>
       <button role="tab" id="t-units" aria-selected="false" aria-controls="p-units">Equipment</button>
@@ -134,6 +137,7 @@ body{padding-bottom:0}
         <p class="note">Questions, quote requests and job applications sent from the Contact page. Mark each one handled once someone has called or emailed back. Leave this page open on a store computer and it chimes when a new message arrives. Saw shop requests (service, parts, trade-ins, equipment questions and tune-up reminders) go to the Saw Shop app instead.</p>
         <div class="btns" style="align-items:center;margin-top:12px">
           <label class="check" style="margin:0"><input id="inbox-done" type="checkbox"> Show handled messages</label>
+          <select id="inbox-store" aria-label="Which store's messages"><option value="mine">My store</option><option value="all">All stores</option></select>
           <button class="btn btn-line btn-sm" type="button" id="inbox-refresh">Refresh</button>
           <button class="btn btn-line btn-sm" type="button" id="inbox-alerts" title="Chime and pop up on this computer when a message comes in">Alerts on</button>
         </div>

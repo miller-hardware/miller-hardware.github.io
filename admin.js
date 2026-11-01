@@ -47,7 +47,7 @@
       $("who").textContent = u ? u.email : "";
       if (!u) { show("s-login", true); return; }
       db.collection("admins").doc(u.uid).get().then(function (snap) {
-        if (snap.exists) { show("s-app", true); boot(); } else { show("s-noadmin", true); }
+        if (snap.exists) { MY_STORE = (snap.data() || {}).store || ""; show("s-app", true); boot(); applyMyStore(); } else { show("s-noadmin", true); }
       }).catch(function () { show("s-noadmin", true); });
     });
     $("signout").addEventListener("click", function () { auth.signOut(); });
@@ -57,6 +57,34 @@
       auth.signInWithEmailAndPassword(id, $("pw").value).catch(function (err) { say("login-msg", friendly(err), "err"); });
     });
   }
+
+  // ---------- my store ----------
+  var MY_STORE = "";
+  function applyMyStore() {
+    var known = MY_STORE === "harrison" || MY_STORE === "yellville" || MY_STORE === "both";
+    show("store-ask", !known);
+    var line = $("mystore-line"); line.textContent = "";
+    if (known) {
+      line.appendChild(document.createTextNode("Your store: " + STORE_TXT[MY_STORE] + ". "));
+      var ch = el("button", "linkbtn", "Change"); ch.type = "button"; ch.addEventListener("click", function () { show("store-ask", true); }); line.appendChild(ch);
+    }
+    $("inbox-store").value = (MY_STORE === "harrison" || MY_STORE === "yellville") ? "mine" : "all";
+    $("inbox-store").disabled = !(MY_STORE === "harrison" || MY_STORE === "yellville");
+    if (typeof renderInbox === "function") renderInbox();
+    if (!u_editing()) uDefaultStore();
+    spDefaultStore(); jbDefaultStore();
+  }
+  function u_editing() { return false; }
+  function uDefaultStore() { if (MY_STORE === "harrison" || MY_STORE === "yellville") $("u-store").value = MY_STORE; }
+  function spDefaultStore() { if (MY_STORE) $("sp-store").value = MY_STORE; }
+  function jbDefaultStore() { if (MY_STORE) $("jb-store").value = MY_STORE; }
+  document.querySelectorAll("[data-mystore]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var v = b.getAttribute("data-mystore"); say("store-ask-msg", "Saving...");
+      db.collection("admins").doc(user.uid).update({ store: v }).then(function () { MY_STORE = v; say("store-ask-msg", ""); applyMyStore(); })
+        .catch(function (e) { say("store-ask-msg", friendly(e), "err"); });
+    });
+  });
 
   var booted = false;
   function boot() {
@@ -302,7 +330,7 @@
   function resetForm() {
     form = { id: null, photos: [] };
     ["u-brand", "u-model", "u-year", "u-hours", "u-price", "u-desc"].forEach(function (id) { $(id).value = ""; });
-    $("u-store").value = "yellville"; $("u-sold").checked = false; $("u-photos").value = "";
+    $("u-store").value = (MY_STORE === "harrison" || MY_STORE === "yellville") ? MY_STORE : "yellville"; $("u-sold").checked = false; $("u-photos").value = "";
     $("u-cond").value = "used"; $("u-clear").checked = false;
     $("unit-form-title").textContent = "Add a unit"; $("u-save").textContent = "Save unit"; show("u-cancel", false);
     renderPreview();
@@ -555,7 +583,10 @@
     var showDone = $("inbox-done").checked, ul = $("msg-list"); ul.textContent = "";
     var fresh = inbox.filter(function (m) { return m.status !== "handled"; }).length;
     $("t-inbox").textContent = fresh ? "Inbox (" + fresh + ")" : "Inbox";
-    var list = inbox.filter(function (m) { return showDone || m.status !== "handled"; });
+    var mineOnly = $("inbox-store").value === "mine" && (MY_STORE === "harrison" || MY_STORE === "yellville");
+    var list = inbox.filter(function (m) { return (showDone || m.status !== "handled") && (!mineOnly || m.store === MY_STORE || m.store === "either" || !m.store); });
+    var other = mineOnly ? inbox.filter(function (m) { return m.status !== "handled" && m.store && m.store !== MY_STORE && m.store !== "either"; }).length : 0;
+    if (other) { var note = el("li", "", other + " new message" + (other > 1 ? "s" : "") + " for the other store. Switch to All stores to see " + (other > 1 ? "them" : "it") + "."); note.style.color = "var(--muted)"; ul.appendChild(note); }
     if (!list.length) { ul.appendChild(el("li", "", showDone ? "No messages yet." : "You're all caught up. No new messages.")); return; }
     list.forEach(function (m) {
       var li = el("li", "msg-item" + (m.status === "handled" ? " done" : ""));
@@ -591,6 +622,7 @@
   function setupInbox() {
     $("inbox-done").addEventListener("change", renderInbox);
     $("inbox-refresh").addEventListener("click", loadInbox);
+    $("inbox-store").addEventListener("change", renderInbox);
   }
 
   // ---------- specials ----------
@@ -623,7 +655,7 @@
   function spReset() {
     sp = { id: null, photo: "" };
     ["sp-title", "sp-price", "sp-note", "sp-desc", "sp-start", "sp-end"].forEach(function (id) { $(id).value = ""; });
-    $("sp-store").value = "both"; $("sp-active").checked = true; $("sp-clear").checked = false; $("sp-photo").value = "";
+    $("sp-store").value = MY_STORE || "both"; $("sp-active").checked = true; $("sp-clear").checked = false; $("sp-photo").value = "";
     $("sp-form-title").textContent = "Add a special"; show("sp-cancel", false); spPreview();
   }
   function spEdit(x) {
@@ -689,7 +721,7 @@
   // ---------- jobs ----------
   var jobs = [], jb = { id: null };
   function jbReset() {
-    jb = { id: null }; $("jb-title").value = ""; $("jb-desc").value = ""; $("jb-store").value = "both"; $("jb-type").value = "Full-time"; $("jb-open").checked = true;
+    jb = { id: null }; $("jb-title").value = ""; $("jb-desc").value = ""; $("jb-store").value = MY_STORE || "both"; $("jb-type").value = "Full-time"; $("jb-open").checked = true;
     $("jb-form-title").textContent = "Post a job"; show("jb-cancel", false);
   }
   function jbEdit(j) {
