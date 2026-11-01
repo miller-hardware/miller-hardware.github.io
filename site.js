@@ -51,65 +51,6 @@
       document.getElementById("c-serial").closest(".field").hidden = t === "trade" || t === "reminder";
     };
     tSel.addEventListener("change", syncEquip); syncEquip();
-
-    // ---------- saw shop service: a few quick questions (shared with the Saw Shop app, /sawshop/intake-trees.js) ----------
-    // Only questions a customer can answer at home are asked here; hands-on checks happen at the counter.
-    var IQW = { log: [], cur: null, type: "", multi: [], done: false };
-    var iqBox = document.getElementById("c-iq"), iqBody = document.getElementById("c-iq-body"), etSel = document.getElementById("c-etype");
-    var iqEsc = function (x) { return String(x == null ? "" : x).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
-    function iqTree() { return window.INTAKE ? INTAKE.treeFor(IQW.type) : null; }
-    function iqRestart() {
-      var on = !!window.INTAKE && tSel.value === "saw-shop";
-      iqBox.hidden = !on; document.getElementById("c-msg-req").hidden = on;
-      if (!on) return;
-      IQW = { log: [], cur: null, type: etSel.value, multi: [], done: false };
-      var t = iqTree(); IQW.cur = INTAKE.firstShown(t, t.start, true); iqDraw();
-    }
-    function iqDraw() {
-      var t = iqTree(); if (!t) return;
-      if (IQW.cur === "END") { IQW.done = true; iqDrawDone(); return; }
-      var n = t.nodes[IQW.cur], opts = INTAKE.optsFor(n, IQW.type), step = IQW.log.length + 1;
-      IQW.multi = [];
-      var h = '<div class="iqw-top"><span>Question ' + step + '</span><span class="iqw-bar"><i style="width:' + Math.min(95, step * 12) + '%"></i></span></div>';
-      h += '<p class="iqw-q">' + iqEsc(n.cq || n.q) + '</p>';
-      if (n.text) h += '<div class="iqw-row"><input type="text" id="iqw-text" maxlength="120" placeholder="Type it here"><button type="button" class="btn btn-line btn-sm" data-iq="text">Next</button></div>';
-      else {
-        h += '<div class="iqw-opts">' + opts.map(function (o, i) { return '<button type="button" class="iqw-opt" aria-pressed="false" data-iq="opt" data-i="' + i + '">' + iqEsc(o.l) + '</button>'; }).join("") + '</div>';
-        if (n.multi) h += '<div class="iqw-row"><button type="button" class="btn btn-line btn-sm" data-iq="multi">Next</button></div>';
-      }
-      h += '<div class="iqw-row"><button type="button" class="iqw-link" data-iq="unsure">Not sure</button>' + (IQW.log.length ? '<button type="button" class="iqw-link" data-iq="back">Back</button>' : '') + '<button type="button" class="iqw-link" data-iq="skip">Skip the rest</button></div>';
-      iqBody.innerHTML = h;
-    }
-    function iqDrawDone() {
-      var r = INTAKE.summarize(IQW.type, IQW.log);
-      iqBody.innerHTML = IQW.log.length ? '<p class="iqw-sum">' + iqEsc(r.sentence || "Thanks.") + '</p><div class="iqw-row"><button type="button" class="iqw-link" data-iq="back">Change an answer</button><button type="button" class="iqw-link" data-iq="restart">Start over</button></div><p class="hint" style="margin-top:6px">We’ll send this with your message. Add anything else below.</p>'
-        : '<div class="iqw-row"><button type="button" class="iqw-link" data-iq="restart">Answer the questions after all</button></div>';
-    }
-    function iqAnswer(a) {
-      var t = iqTree(), n = t.nodes[IQW.cur]; a.id = IQW.cur; a.online = true; IQW.log.push(a);
-      IQW.cur = INTAKE.firstShown(t, INTAKE.nextId(n, a), true); iqDraw();
-    }
-    iqBox.addEventListener("click", function (e) {
-      var b = e.target.closest("[data-iq]"); if (!b) return;
-      var k = b.getAttribute("data-iq"), t = iqTree(), n = t && IQW.cur !== "END" ? t.nodes[IQW.cur] : null;
-      if (k === "opt" && n) {
-        var o = INTAKE.optsFor(n, IQW.type)[+b.getAttribute("data-i")];
-        if (n.multi) { var j = IQW.multi.indexOf(o.l); if (j < 0) IQW.multi.push(o.l); else IQW.multi.splice(j, 1); b.setAttribute("aria-pressed", j < 0 ? "true" : "false"); return; }
-        iqAnswer({ pick: [o.l] });
-      } else if (k === "multi" && n) { iqAnswer(IQW.multi.length ? { pick: IQW.multi.slice() } : { unsure: true }); }
-      else if (k === "text" && n) { var v = document.getElementById("iqw-text").value.trim(); iqAnswer(v ? { pick: [], text: v } : { unsure: true }); }
-      else if (k === "unsure" && n) { iqAnswer({ unsure: true }); }
-      else if (k === "back") { var last = IQW.log.pop(); if (last) { IQW.cur = last.id; IQW.done = false; } iqDraw(); }
-      else if (k === "skip") { IQW.cur = "END"; iqDraw(); }
-      else if (k === "restart") { iqRestart(); }
-    });
-    tSel.addEventListener("change", iqRestart); etSel.addEventListener("change", iqRestart);
-    if (window.INTAKE) iqRestart();
-    function iqForRequest() {   // what rides along with a saw shop request: a sentence, the answers, and a code line for the app
-      if (!window.INTAKE || iqBox.hidden || !IQW.log.length) return null;
-      var r = INTAKE.summarize(IQW.type, IQW.log);
-      return { sentence: r.sentence, lines: r.answers.map(function (x) { return "- " + x.q + " " + x.a; }), code: INTAKE.encode(IQW.type, IQW.log) };
-    }
     var status = document.getElementById("c-status");
     var say = function (t, k) { status.textContent = t; status.className = "form-msg" + (k ? " " + k : ""); };
     form.addEventListener("submit", function (e) {
@@ -120,20 +61,12 @@
       if (!phone && !email) { say("Please leave a phone number or an email so we can reply.", "err"); document.getElementById("c-phone").focus(); return; }
       if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say("That email address doesn't look right.", "err"); document.getElementById("c-email").focus(); return; }
       if (!msg && tSel.value === "reminder") msg = "Please remind me when it's time for a tune-up.";
-      var iq = tSel.value === "saw-shop" ? iqForRequest() : null;
-      var ownMsg = msg;
-      if (!msg && iq && iq.sentence) msg = iq.sentence;
       if (!msg) { say("Please add a message.", "err"); document.getElementById("c-msg").focus(); return; }
       var t = tSel.value;
       if ((t === "saw-shop" || t === "reminder") && !phone) { say("Please leave a phone number so the saw shop can call you.", "err"); document.getElementById("c-phone").focus(); return; }
       // Everything the saw shop handles goes to the Saw Shop app; the website Inbox keeps the hardware-side messages.
       var toShop = t === "saw-shop" || t === "reminder" || t === "parts" || t === "trade" || t === "used";
       var problem = msg;
-      if (iq) {
-        var room = 1780 - iq.code.length;
-        problem = ((iq.sentence ? iq.sentence + "\n\n" : "") + (ownMsg ? "Customer said: " + ownMsg + "\n\n" : "") + "Their answers:\n" + iq.lines.join("\n")).slice(0, room) + "\n" + iq.code;
-        msg = ownMsg ? (iq.sentence ? iq.sentence + "\n\n" : "") + ownMsg : msg;
-      }
       if (!document.getElementById("c-equip").hidden) {
         var eq = [["Equipment", (t === "saw-shop" || t === "trade" || t === "reminder") ? v("c-etype") : ""], ["Brand", v("c-brand")], ["Model", v("c-model")],
           ["Year", t === "trade" ? v("c-year") : ""], ["Hours", t === "trade" ? v("c-hours") : ""],
@@ -146,7 +79,7 @@
       if (!dbReady) { say("Sorry, the form isn't available right now. Please call Harrison 870-741-3493 or Yellville 870-449-4255.", "err"); return; }
       var btnSend = document.getElementById("c-send"); btnSend.disabled = true; say("Sending...");
       var done = function () {
-        form.reset(); document.getElementById("c-ref-line").hidden = true; syncEquip(); iqRestart();
+        form.reset(); document.getElementById("c-ref-line").hidden = true; syncEquip();
         say("Thanks, " + name.split(" ")[0] + ". Your message was sent. We'll call or email you back.", "ok"); btnSend.disabled = false;
       };
       if (toShop) {
@@ -156,7 +89,7 @@
           return sdb.ref("web_requests").push({
             name: name.slice(0, 80), phone: phone.slice(0, 30), email: email.slice(0, 120), store: storeName,
             equipType: (t === "saw-shop" || t === "trade" || t === "reminder") ? v("c-etype") : "", brand: v("c-brand").slice(0, 40), model: v("c-model").slice(0, 40), serial: v("c-serial").slice(0, 40),
-            problem: ((t === "used" && ref) ? "About: " + ref + "\n\n" : "") + (iq ? problem : problem.slice(0, 1800)), status: "new", createdAt: firebase.database.ServerValue.TIMESTAMP,
+            problem: ((t === "used" && ref) ? "About: " + ref + "\n\n" : "") + problem.slice(0, 1800), status: "new", createdAt: firebase.database.ServerValue.TIMESTAMP,
             kind: t === "saw-shop" ? "service" : t, ref: ref.slice(0, 120), dropoff: t === "saw-shop" ? v("c-drop") : "",
             part: t === "parts" ? v("c-part").slice(0, 200) : "", year: t === "trade" ? v("c-year").slice(0, 4) : "", hours: t === "trade" ? v("c-hours").slice(0, 8) : ""
           });
@@ -254,10 +187,10 @@
       var key = box.getAttribute("data-brands"), list = [];
       if (key === "all") {
         var seen = {};
-        ["saw", "paint", "lumber", "plumbing", "hardware"].forEach(function (k) {
+        ["saw", "lumber", "doors", "septic", "farm", "paint"].forEach(function (k) {
           (brands[k] || []).forEach(function (b) { if (!seen[b.name]) { seen[b.name] = 1; list.push(b); } });
         });
-      } else { list = brands[key] || []; }
+      } else { if (!brands[key]) return; list = brands[key]; }   // not saved yet: keep the built-in list
       box.textContent = "";
       list.forEach(function (b) { if (b && b.name) box.appendChild(cell(b)); });
     });
@@ -293,6 +226,8 @@
   function unitCard(u) {
     var card = document.createElement("article"); card.className = "unit" + (u.clearance ? " is-clearance" : "");
     if (u.clearance) { var rb = document.createElement("span"); rb.className = "ribbon"; rb.textContent = "Clearance"; card.appendChild(rb); }
+    var stg = null;
+    if (u.store === "harrison" || u.store === "yellville") { stg = document.createElement("span"); stg.className = "unit-store"; stg.textContent = "At " + (u.store === "harrison" ? "Harrison" : "Yellville") + " store"; }
     var photos = Array.isArray(u.photos) ? u.photos.filter(function (x) { return typeof x === "string" && (x.indexOf("data:image/") === 0 || x.indexOf("https://firebasestorage.googleapis.com/") === 0); }) : [];
     var title = [u.condition === "new" ? "New" : u.year, u.brand, u.model].filter(Boolean).join(" ");
     if (photos.length) {
@@ -316,6 +251,7 @@
       }
     }
     var body = document.createElement("div"); body.className = "unit-body";
+    if (stg) { if (photos.length) card.appendChild(stg); else { stg.className = "unit-store inline"; body.appendChild(stg); } }
     var h = document.createElement("h3"); h.textContent = title || "Used unit"; body.appendChild(h);
     var meta = [];
     if (u.hours !== "" && u.hours != null && !isNaN(Number(u.hours))) meta.push(Number(u.hours).toLocaleString("en-US") + " hours");
@@ -383,13 +319,52 @@
       var m = document.createElement("p"); m.className = "job-meta"; m.textContent = [STORE_LABEL[j.store] || "Both stores", j.type].filter(Boolean).join(" \u00b7 "); l.appendChild(m);
       if (j.description) { var d = document.createElement("p"); d.textContent = j.description; l.appendChild(d); }
       c.appendChild(l);
-      var a = document.createElement("a"); a.className = "btn btn-primary";
-      a.href = "contact.html?topic=job&store=" + encodeURIComponent(j.store === "both" ? "either" : (j.store || "either")) + "&ref=" + encodeURIComponent(j.title.slice(0, 120));
+      var a = document.createElement("a"); a.className = "btn btn-primary"; a.href = "#apply";
+      a.addEventListener("click", function () {
+        var pos = document.getElementById("a-position"); if (pos) pos.value = j.title.slice(0, 80);
+        var st = document.getElementById("a-store"); if (st && (j.store === "harrison" || j.store === "yellville")) st.value = j.store;
+      });
       a.textContent = "Apply"; c.appendChild(a);
       box.appendChild(c);
     });
     box.hidden = open.length === 0;
     if (empty) empty.hidden = open.length > 0;
+    applyHiring(HIRING);
+  }
+  var HIRING = false;
+  // "Now hiring" is switched on from the admin page.
+  function applyHiring(on) {
+    HIRING = !!on;
+    document.querySelectorAll("[data-hiring]").forEach(function (el) { el.hidden = !on; });
+    var sec = document.getElementById("hiring"), box = document.getElementById("jobs-list");
+    if (sec) sec.hidden = !(on || (box && !box.hidden));
+  }
+
+  // ---------- job application (careers page) ----------
+  var af = document.getElementById("apply-form");
+  if (af) {
+    var aStart = Date.now();
+    af.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var v = function (id) { return document.getElementById(id).value.trim(); };
+      var m = document.getElementById("a-status"), say = function (t, k) { m.textContent = t; m.className = "form-msg" + (k ? " " + k : ""); };
+      if (v("a-website") || Date.now() - aStart < 3000) { say("Thanks. Your application was sent.", "ok"); return; }
+      if (!v("a-name")) { say("Please add your name.", "err"); document.getElementById("a-name").focus(); return; }
+      if (v("a-phone").replace(/\D/g, "").length < 7) { say("Please add a phone number we can reach you at.", "err"); document.getElementById("a-phone").focus(); return; }
+      if (v("a-email") && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v("a-email"))) { say("That email address doesn't look right.", "err"); return; }
+      if (!dbReady) { say("Sorry, that didn't go through. Please call Harrison 870-741-3493 or Yellville 870-449-4255.", "err"); return; }
+      var btn = document.getElementById("a-send"); btn.disabled = true; say("Sending...");
+      dbReady.collection("applications").add({
+        name: v("a-name").slice(0, 80), phone: v("a-phone").slice(0, 30), email: v("a-email").slice(0, 120), store: document.getElementById("a-store").value,
+        position: v("a-position").slice(0, 80), availability: document.getElementById("a-avail").value, days: v("a-days").slice(0, 120), start: v("a-start").slice(0, 60),
+        experience: v("a-exp").slice(0, 2000), more: v("a-more").slice(0, 1000), status: "new", createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(function () {
+        var first = v("a-name").split(" ")[0]; af.reset();
+        say("Thanks, " + first + ". Your application was sent. A manager will be in touch.", "ok");
+      }).catch(function () {
+        say("Sorry, that didn't go through. Please call Harrison 870-741-3493 or Yellville 870-449-4255.", "err");
+      }).then(function () { btn.disabled = false; });
+    });
   }
 
   function fillGrid(gridId, list, emptyId, sectionId) {
@@ -421,7 +396,7 @@
     db.collection("site").doc("settings").get().then(function (snap) {
       if (!snap.exists) return;
       var s = snap.data() || {};
-      applyBanner(s.banner); applyStores(s.stores); applyBrands(s.brands);
+      applyBanner(s.banner); applyStores(s.stores); applyBrands(s.brands); applyHiring(!!s.hiring);
     }).catch(function () { /* keep the built-in content */ });
     if (document.getElementById("used-units-grid") || document.getElementById("clearance-grid")) {
       // Units entered on the admin page, plus repaired trade-ins posted from the Saw Shop app.

@@ -61,7 +61,7 @@
   var booted = false;
   function boot() {
     if (booted) return; booted = true;
-    setupTabs(); setupUnits(); setupStores(); setupBrands(); setupBanner(); setupInbox(); setupSpecials(); setupJobs(); setupStaff();
+    setupTabs(); setupUnits(); setupStores(); setupBrands(); setupBanner(); setupInbox(); setupSpecials(); setupJobs(); setupStaff(); setupHiring();
     db.collection("site").doc("settings").get().then(function (snap) {
       if (snap.exists) {
         var s = snap.data() || {};
@@ -69,9 +69,71 @@
         if (s.stores) settings.stores = merge(clone(DEF.stores), s.stores);
         if (s.brands) settings.brands = merge(clone(DEF.brands), s.brands);
       }
-      fillStores(); fillBrands(); fillBanner();
+      fillStores(); fillBrands(); fillBanner(); $("hire-on").checked = !!(snap.exists && (snap.data() || {}).hiring);
     }).catch(function (e) { say("stores-msg", friendly(e), "err"); fillStores(); fillBrands(); fillBanner(); });
-    loadUnits(); loadInbox(); loadSpecials(); loadJobs(); loadStaff();
+    loadUnits(); loadInbox(); loadSpecials(); loadJobs(); loadStaff(); loadApps();
+  }
+
+  // ---------- job applications and the Now hiring switch ----------
+  var apps = [];
+  function loadApps() {
+    db.collection("applications").get().then(function (qs) {
+      apps = []; qs.forEach(function (d) { var x = d.data(); x.id = d.id; apps.push(x); });
+      apps.sort(function (a, b) { return ms(b.createdAt) - ms(a.createdAt); }); renderApps(); say("ap-msg", "");
+    }).catch(function (e) { say("ap-msg", friendly(e), "err"); });
+  }
+  function apWhen(a) { var t = ms(a.createdAt); return t ? new Date(t).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""; }
+  function renderApps() {
+    var ul = $("ap-list"); ul.textContent = "";
+    var fresh = apps.filter(function (a) { return a.status !== "reviewed"; }).length;
+    $("t-jobs").textContent = fresh ? "Jobs (" + fresh + ")" : "Jobs";
+    var list = apps.filter(function (a) { return $("ap-done").checked || a.status !== "reviewed"; });
+    if (!list.length) { ul.appendChild(el("li", "", $("ap-done").checked ? "No applications yet." : "No new applications.")); return; }
+    list.forEach(function (a) {
+      var li = el("li"); var info = el("div", "info"); var b = el("b", "", a.name || "Applicant");
+      if (a.status !== "reviewed") b.appendChild(el("span", "badge new", "New")); info.appendChild(b);
+      info.appendChild(el("span", "", [a.position || "Any job", STORE_TXT[a.store] || "", a.availability, apWhen(a)].filter(Boolean).join(" · ")));
+      info.appendChild(el("span", "", [a.phone, a.email].filter(Boolean).join(" · "))); li.appendChild(info);
+      var acts = el("div", "acts");
+      actBtn(acts, "Print / save", "btn-line", function () { printApp(a); });
+      actBtn(acts, a.status === "reviewed" ? "Mark new" : "Mark reviewed", "btn-line", function () {
+        var next = a.status === "reviewed" ? "new" : "reviewed";
+        db.collection("applications").doc(a.id).update({ status: next }).then(function () { a.status = next; renderApps(); }).catch(function (e) { say("ap-msg", friendly(e), "err"); });
+      });
+      actBtn(acts, "Delete", "btn-line", function () {
+        confirmDelete(acts, "Delete this application?", function () {
+          db.collection("applications").doc(a.id).delete().then(function () { apps = apps.filter(function (y) { return y.id !== a.id; }); renderApps(); })
+            .catch(function (e) { say("ap-msg", friendly(e), "err"); });
+        }, renderApps);
+      });
+      li.appendChild(acts); ul.appendChild(li);
+    });
+  }
+  // Opens a clean one-page copy of the application and the print dialog. "Save as PDF" in that dialog keeps a file copy.
+  function printApp(a) {
+    var w = window.open("", "_blank"); if (!w) { say("ap-msg", "Your browser blocked the print window. Allow pop-ups for this page and try again.", "err"); return; }
+    var d = w.document; d.title = "Application - " + (a.name || "");
+    var st = d.createElement("style"); st.textContent = "body{font:15px/1.5 Arial,sans-serif;color:#111;margin:40px;max-width:720px}h1{font:600 26px Georgia,serif;margin:0 0 4px;border-bottom:3px solid #c8102e;padding-bottom:8px}.sub{color:#555;margin:0 0 20px}dt{font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#555;margin-top:14px}dd{margin:2px 0 0;white-space:pre-wrap}.notes{margin-top:30px;border-top:1px solid #999;padding-top:8px;height:160px}";
+    d.head.appendChild(st);
+    var h = d.createElement("h1"); h.textContent = "Job application: " + (a.name || ""); d.body.appendChild(h);
+    var sub = d.createElement("p"); sub.className = "sub"; sub.textContent = "Miller Hardware Company · received " + apWhen(a); d.body.appendChild(sub);
+    var dl = d.createElement("dl");
+    [["Name", a.name], ["Phone", a.phone], ["Email", a.email], ["Store", STORE_TXT[a.store] || a.store], ["Job interested in", a.position], ["Looking for", a.availability],
+     ["Days and hours available", a.days], ["Could start", a.start], ["Work experience", a.experience], ["Anything else", a.more]].forEach(function (p) {
+      var dt = d.createElement("dt"); dt.textContent = p[0]; var dd = d.createElement("dd"); dd.textContent = p[1] || "-"; dl.appendChild(dt); dl.appendChild(dd);
+    });
+    d.body.appendChild(dl);
+    var n = d.createElement("div"); n.className = "notes"; n.textContent = "Interview notes:"; d.body.appendChild(n);
+    setTimeout(function () { w.focus(); w.print(); }, 300);
+  }
+  function setupHiring() {
+    $("ap-done").addEventListener("change", renderApps);
+    $("hire-on").addEventListener("change", function () {
+      var on = $("hire-on").checked; say("hire-msg", "Saving...");
+      db.collection("site").doc("settings").set({ hiring: on }, { merge: true })
+        .then(function () { say("hire-msg", on ? "Saved. \u201cNow hiring\u201d is showing on the website." : "Saved. \u201cNow hiring\u201d is off.", "ok"); })
+        .catch(function (e) { $("hire-on").checked = !on; say("hire-msg", friendly(e), "err"); });
+    });
   }
 
   // ---------- staff logins ----------
@@ -373,7 +435,7 @@
   }
 
   // ---------- brands ----------
-  var DEPT_NAMES = { saw: "Saw shop", paint: "Paint", lumber: "Lumber", plumbing: "Plumbing", hardware: "Hardware and tools" };
+  var DEPT_NAMES = { saw: "Saw shop", lumber: "Lumber yard", doors: "Doors and windows (lumber page)", septic: "Septic and drainage", farm: "Farm and ranch", paint: "Paint" };
   var brandState = {};
   function fillBrands() {
     brandState = {};
@@ -446,7 +508,7 @@
   function ms(v) { return v && typeof v.toMillis === "function" ? v.toMillis() : (typeof v === "number" ? v : 0); }
 
   // ---------- inbox ----------
-  var TOPIC_TXT = { general: "General question", quote: "Quote request", used: "Equipment", parts: "Parts request", trade: "Trade-in", "saw-shop-web": "Saw shop (copy)", "special-order": "Special order", "saw-shop": "Saw shop service", job: "Job application" };
+  var TOPIC_TXT = { general: "General question", quote: "Quote request", used: "Equipment", parts: "Parts request", trade: "Trade-in", "saw-shop-web": "Saw shop (copy)", "special-order": "Special order", "saw-shop": "Saw shop service", job: "Job application (old form)" };
   var inbox = [], inboxUnsub = null, seen = null, baseTitle = document.title;
   // Live Inbox: new messages show up on their own, with a chime and a desktop pop-up while this page is open.
   function loadInbox() {

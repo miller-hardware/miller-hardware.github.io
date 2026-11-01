@@ -175,8 +175,21 @@ body{padding-bottom:0}
     <!-- jobs -->
     <div id="p-jobs" role="tabpanel" aria-labelledby="t-jobs" class="hidden">
       <div class="box">
+        <h2>Now hiring sign</h2>
+        <p class="note">Turns on a red "Now hiring" tag at the top of every page and a "We're hiring" section on the Careers page. The job application form is always on the Careers page either way.</p>
+        <label class="check"><input id="hire-on" type="checkbox"> Show "Now hiring" on the website</label>
+        <p class="msg" id="hire-msg" role="status"></p>
+      </div>
+      <div class="box">
+        <h2>Job applications</h2>
+        <p class="note">Applications sent from the Careers page. Print or save any of them as a PDF to keep on file. Applications stay here until you delete them.</p>
+        <div class="btns" style="align-items:center;margin-top:12px"><label class="check" style="margin:0"><input id="ap-done" type="checkbox"> Show reviewed applications</label></div>
+        <p class="msg" id="ap-msg" role="status"></p>
+        <ul class="list" id="ap-list"></ul>
+      </div>
+      <div class="box">
         <h2 id="jb-form-title">Post a job</h2>
-        <p class="note">Open jobs show on the Careers page with an Apply button. Applications arrive in the Inbox.</p>
+        <p class="note">Open jobs show on the Careers page with an Apply button. Applications arrive in Job applications above.</p>
         <form id="jb-form" novalidate>
           <div class="field"><label for="jb-title">Job title</label><input id="jb-title" type="text" maxlength="80" placeholder="Yard help, Saw shop technician"></div>
           <div class="row2">

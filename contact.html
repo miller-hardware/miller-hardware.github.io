@@ -14,7 +14,7 @@
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <div class="announce" id="announce" role="status" hidden></div>
-<div class="topbar"><div class="wrap topbar-in"><span>Family owned since 1931 &middot; True Value hardware and lumber</span><span class="phones"><span>Harrison <a href="tel:+18707413493">870-741-3493</a></span><span>Yellville <a href="tel:+18704494255">870-449-4255</a></span></span></div></div>
+<div class="topbar"><div class="wrap topbar-in"><span>Family owned since 1931 &middot; True Value hardware and lumber <a class="hiring-pill" href="careers.html" data-hiring hidden>Now hiring</a></span><span class="phones"><span>Harrison <a href="tel:+18707413493">870-741-3493</a></span><span>Yellville <a href="tel:+18704494255">870-449-4255</a></span></span></div></div>
 <header class="hdr on-dark">
   <div class="wrap hdr-in">
     <a class="logo" href="index.html" aria-label="Miller Hardware Company, home"><img src="img/logo-white.png" width="396" height="214" alt="Miller Hardware Company, Harrison and Yellville"></a>
@@ -36,7 +36,7 @@
         <div class="field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email" maxlength="120"></div>
       </div>
       <p class="hint">Leave a phone number or an email, so we can get back to you.</p>
-      <div class="field"><label for="c-topic">What's it about?</label><select id="c-topic" name="topic"><option value="general">General question</option><option value="quote">Quote request (lumber, materials)</option><option value="used">New or used equipment</option><option value="parts">Parts request</option><option value="saw-shop">Saw shop service or repair</option><option value="trade">Trade-in value</option><option value="reminder">Tune-up reminder</option><option value="special-order">Special order</option><option value="job">Job application</option></select></div>
+      <div class="field"><label for="c-topic">What's it about?</label><select id="c-topic" name="topic"><option value="general">General question</option><option value="quote">Quote request (lumber, materials)</option><option value="used">New or used equipment</option><option value="parts">Parts request</option><option value="saw-shop">Saw shop service or repair</option><option value="trade">Trade-in value</option><option value="reminder">Tune-up reminder</option><option value="special-order">Special order</option></select></div>
       <p class="regarding" id="c-ref-line" hidden>Regarding: <b id="c-ref-text"></b></p>
       <div id="c-equip" hidden>
         <div class="row2" id="c-etype-row">
@@ -56,11 +56,7 @@
           <div class="field" id="c-part-field"><label for="c-part">Part needed</label><input id="c-part" type="text" maxlength="80" placeholder="Name or part number, if you have it"></div>
         </div>
       </div>
-      <div class="iqw" id="c-iq" hidden>
-        <p class="iqw-h">A few quick questions <span>Optional. Answering them gets your repair started faster.</span></p>
-        <div id="c-iq-body"></div>
-      </div>
-      <div class="field"><label for="c-msg">Message <span class="req" id="c-msg-req">required</span></label><textarea id="c-msg" name="message" rows="6" maxlength="2000" required placeholder="For a quote, list sizes and quantities. For a used unit or a job, tell us anything you'd like us to know."></textarea></div>
+      <div class="field"><label for="c-msg">Message <span class="req">required</span></label><textarea id="c-msg" name="message" rows="6" maxlength="2000" required placeholder="For a quote, list sizes and quantities. For a used unit or a job, tell us anything you'd like us to know."></textarea></div>
       <div class="hp" aria-hidden="true"><label for="c-website">Leave this empty</label><input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
       <div class="actions" style="margin-top:24px"><button class="btn btn-primary" type="submit" id="c-send">Send message <span class="arr" aria-hidden="true">&rarr;</span></button></div>
       <p class="form-msg" id="c-status" role="status" aria-live="polite"></p>
@@ -82,7 +78,7 @@
     </div>
     <div>
       <h4>Departments</h4>
-      <ul><li><a href="saw-shop.html">Saw shop</a></li><li><a href="lumber.html">Lumber</a></li><li><a href="paint.html">Paint</a></li><li><a href="plumbing.html">Plumbing</a></li><li><a href="hardware-tools.html">Hardware and tools</a></li><li><a href="saw-shop.html#used">Used equipment</a></li><li><a href="special-orders.html">Special orders</a></li></ul>
+      <ul><li><a href="saw-shop.html">Saw shop</a></li><li><a href="lumber.html">Lumber</a></li><li><a href="farm-ranch.html">Farm and ranch</a></li><li><a href="septic-drainage.html">Septic and drainage</a></li><li><a href="electrical.html">Electrical</a></li><li><a href="plumbing.html">Plumbing</a></li><li><a href="lawn-garden.html">Lawn and garden</a></li><li><a href="hardware-tools.html">Hardware and tools</a></li><li><a href="paint.html">Paint</a></li><li><a href="saw-shop.html#used">Used equipment</a></li><li><a href="special-orders.html">Special orders</a></li></ul>
     </div>
     <div>
       <h4>Company</h4>
@@ -106,7 +102,6 @@
 <nav class="callbar" aria-label="Call a store"><a href="tel:+18707413493">Call Harrison<small>870-741-3493</small></a><a href="tel:+18704494255">Call Yellville<small>870-449-4255</small></a></nav>
 <script src="site-data.js"></script>
 <script src="firebase-config.js"></script>
-<script src="/sawshop/intake-trees.js"></script>
 <script src="site.js" defer></script>
 </body>
 </html>

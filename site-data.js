@@ -31,12 +31,66 @@ window.MH_DEFAULTS = {
     "label": "Treated lumber"
    },
    {
-    "name": "Boise Cascade",
-    "label": "Building materials"
-   },
+    "name": "LP SmartSide",
+    "label": "Siding"
+   }
+  ],
+  "doors": [
    {
     "name": "Viwintech",
-    "label": "Doors and windows"
+    "label": "Windows"
+   },
+   {
+    "name": "Simonton",
+    "label": "Windows"
+   },
+   {
+    "name": "Ply Gem",
+    "label": "Windows"
+   },
+   {
+    "name": "Andersen",
+    "label": "Windows and doors"
+   },
+   {
+    "name": "Masonite",
+    "label": "Doors"
+   },
+   {
+    "name": "Therma-Tru",
+    "label": "Doors"
+   }
+  ],
+  "septic": [
+   {
+    "name": "Prinsco",
+    "label": "Drainage and culvert pipe"
+   },
+   {
+    "name": "Contech",
+    "label": "Culverts"
+   },
+   {
+    "name": "AK Industries",
+    "label": "Septic tanks"
+   },
+   {
+    "name": "Infiltrator",
+    "label": "Septic chambers and tanks"
+   }
+  ],
+  "farm": [
+   {
+    "name": "Behlen Country",
+    "label": "Gates"
+   },
+   {
+    "name": "Red Brand",
+    "label": "Barbed wire and fence"
+   },
+   {
+    "name": "Gaucho",
+    "label": "Barbed wire"
    }
   ],
   "saw": [
@@ -58,10 +112,6 @@ window.MH_DEFAULTS = {
    },
    {
     "name": "Exmark",
-    "label": "Call for price"
-   },
-   {
-    "name": "Senix",
     "label": "Call for price"
    }
   ],
