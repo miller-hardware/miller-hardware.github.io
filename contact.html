@@ -56,7 +56,11 @@
           <div class="field" id="c-part-field"><label for="c-part">Part needed</label><input id="c-part" type="text" maxlength="80" placeholder="Name or part number, if you have it"></div>
         </div>
       </div>
-      <div class="field"><label for="c-msg">Message <span class="req">required</span></label><textarea id="c-msg" name="message" rows="6" maxlength="2000" required placeholder="For a quote, list sizes and quantities. For a used unit or a job, tell us anything you'd like us to know."></textarea></div>
+      <div class="iqw" id="c-iq" hidden>
+        <p class="iqw-h">A few quick questions <span>Optional. Answering them gets your repair started faster.</span></p>
+        <div id="c-iq-body"></div>
+      </div>
+      <div class="field"><label for="c-msg">Message <span class="req" id="c-msg-req">required</span></label><textarea id="c-msg" name="message" rows="6" maxlength="2000" required placeholder="For a quote, list sizes and quantities. For a used unit or a job, tell us anything you'd like us to know."></textarea></div>
       <div class="hp" aria-hidden="true"><label for="c-website">Leave this empty</label><input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
       <div class="actions" style="margin-top:24px"><button class="btn btn-primary" type="submit" id="c-send">Send message <span class="arr" aria-hidden="true">&rarr;</span></button></div>
       <p class="form-msg" id="c-status" role="status" aria-live="polite"></p>
@@ -102,6 +106,7 @@
 <nav class="callbar" aria-label="Call a store"><a href="tel:+18707413493">Call Harrison<small>870-741-3493</small></a><a href="tel:+18704494255">Call Yellville<small>870-449-4255</small></a></nav>
 <script src="site-data.js"></script>
 <script src="firebase-config.js"></script>
+<script src="/sawshop/intake-trees.js"></script>
 <script src="site.js" defer></script>
 </body>
 </html>
