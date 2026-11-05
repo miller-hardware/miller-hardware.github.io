@@ -510,3 +510,18 @@ a:focus-visible,button:focus-visible,.btn:focus-visible,input:focus-visible,sele
 .hiring-pill[hidden]{display:none}
 .apply-form{max-width:860px}
 .unit-store.inline{position:static;align-self:flex-start;box-shadow:none}
+/* saw shop intake questions on the contact form */
+.iqw{margin-top:22px;border:1.5px solid var(--rule-2);border-radius:3px;background:var(--panel);padding:16px 18px}
+.iqw-h{font-weight:700;margin:0 0 4px}
+.iqw-h span{display:block;font-weight:400;font-size:14px;color:var(--muted);margin-top:2px}
+.iqw-top{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);margin:10px 0 6px}
+.iqw-bar{flex:1;height:4px;background:var(--rule);border-radius:2px;overflow:hidden}.iqw-bar i{display:block;height:100%;background:var(--red)}
+.iqw-q{font-size:1.15rem;font-weight:700;line-height:1.3;margin:2px 0 12px}
+.iqw-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.iqw-opt{font:inherit;font-size:15px;font-weight:600;text-align:left;color:var(--ink);background:var(--panel);border:1.5px solid var(--rule-2);border-radius:3px;padding:12px 14px;min-height:50px;cursor:pointer}
+.iqw-opt:hover{border-color:var(--ink)}
+.iqw-opt[aria-pressed="true"]{border-color:var(--red);box-shadow:inset 0 0 0 1px var(--red)}
+.iqw-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.iqw-row .iqw-link{font:inherit;font-size:14px;background:none;border:0;color:var(--link);text-decoration:underline;cursor:pointer;padding:6px 2px}
+.iqw-sum{border-left:3px solid var(--red);padding:8px 12px;background:var(--bg);margin:10px 0 0;line-height:1.5}
+.form .iqw input[type=text]{min-height:44px}
